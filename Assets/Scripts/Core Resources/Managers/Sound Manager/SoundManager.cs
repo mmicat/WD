@@ -8,7 +8,7 @@ using WitchDoctor.Utils;
 using WitchDoctor.CoreResources.Utils.Singleton;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 
-namespace ToolBox.Managers.GeneralUtils
+namespace WitchDoctor.CoreResources.Managers.GeneralUtils
 {
     public enum OneShotSounds
     {

@@ -191,17 +191,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""40088508-b2be-476f-be68-91becc1b2d1e"",
-                    ""path"": ""<PS5DualSenseGamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Back"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""c3f58e48-ae4c-4e9c-b69d-204af6e0b4c9"",
                     ""path"": ""<XInputController>/buttonEast"",
                     ""interactions"": """",
@@ -210,105 +199,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""52e8ea81-743f-4e9f-a3eb-cc70c01fcdbf"",
-                    ""path"": ""<DualSenseGamepadHID>/dpad"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f092cd2a-7826-4942-a3fd-370c7a9f7f45"",
-                    ""path"": ""<XInputController>/dpad"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3a28d4a5-c19b-4a29-8f65-cabdcac8bb4e"",
-                    ""path"": ""<DualSenseGamepadHID>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""74d28958-7c3d-4aa8-b8d4-f1dec8c29006"",
-                    ""path"": ""<XInputController>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""WASD"",
-                    ""id"": ""ba48e389-cea8-4c97-a3bb-565d43dadf1d"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""8d4b30da-4b64-448c-a2c9-c6d543d4f2de"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""a737864f-bc49-499e-a0ce-cba0b0d41b8c"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""e3505711-3f07-4c2e-8253-301d7c6a2a35"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""0918e49b-c632-43cf-bdce-8462402215a7"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""Directional Keys"",
@@ -327,7 +217,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -338,7 +228,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -349,7 +239,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -360,10 +250,120 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""ba48e389-cea8-4c97-a3bb-565d43dadf1d"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""8d4b30da-4b64-448c-a2c9-c6d543d4f2de"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""a737864f-bc49-499e-a0ce-cba0b0d41b8c"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""e3505711-3f07-4c2e-8253-301d7c6a2a35"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""0918e49b-c632-43cf-bdce-8462402215a7"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52e8ea81-743f-4e9f-a3eb-cc70c01fcdbf"",
+                    ""path"": ""<DualSenseGamepadHID>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PS5"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f092cd2a-7826-4942-a3fd-370c7a9f7f45"",
+                    ""path"": ""<XInputController>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XBoxSerX"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a28d4a5-c19b-4a29-8f65-cabdcac8bb4e"",
+                    ""path"": ""<DualSenseGamepadHID>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PS5"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74d28958-7c3d-4aa8-b8d4-f1dec8c29006"",
+                    ""path"": ""<XInputController>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XBoxSerX"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af060fcc-dc55-4d54-bce2-7cbd45d106ad"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -371,7 +371,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<DualSenseGamepadHID>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""PS5"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -382,18 +382,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<XInputController>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""af060fcc-dc55-4d54-bce2-7cbd45d106ad"",
-                    ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""XBoxSerX"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -401,10 +390,32 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d89c30e1-2298-4c77-8096-00e22dee2883"",
-                    ""path"": """",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""646b4a19-01cd-4b49-8797-134b60ebd4eb"",
+                    ""path"": ""<DualSenseGamepadHID>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PS5"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5334a55e-6205-4cd1-9edb-973fecf899a2"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XBoxSerX"",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -415,7 +426,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Primary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -426,7 +437,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<DualSenseGamepadHID>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""PS5"",
                     ""action"": ""Primary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -437,7 +448,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""XBoxSerX"",
                     ""action"": ""Primary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -448,7 +459,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardNMouse"",
                     ""action"": ""Secondary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -459,7 +470,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<DualSenseGamepadHID>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""PS5"",
                     ""action"": ""Secondary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -470,7 +481,7 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<XInputController>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""XBoxSerX"",
                     ""action"": ""Secondary Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -762,72 +773,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""679c5be7-9cfc-48c6-ab0e-9d64f9697e02"",
-                    ""path"": ""<PS5DualSenseGamepad>/dpad"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Joystick [DualSense (on PS5)]"",
-                    ""id"": ""f42a964a-3fed-4c99-b184-7832d372da9e"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""fc9dceb8-70a2-4b0a-b511-c0a0106119bf"",
-                    ""path"": ""<PS5DualSenseGamepad>/leftStick/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""5aa1b106-c856-4d64-8d83-63d5116f7943"",
-                    ""path"": ""<PS5DualSenseGamepad>/leftStick/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""fb8c5c4f-9719-473d-a4a4-ceef5d97a7eb"",
-                    ""path"": ""<PS5DualSenseGamepad>/leftStick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""c60e31d0-ff04-452c-8ac5-702eb7728759"",
-                    ""path"": ""<PS5DualSenseGamepad>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
                     ""id"": ""dd3c151c-a0b6-46fe-8bf9-90c543fc9390"",
                     ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
@@ -841,17 +786,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""03dd70fc-b0c5-4292-a1ea-fa84d1d17773"",
                     ""path"": ""<DualSenseGamepadHID>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Submit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5b13aab0-95da-4517-81e4-e2e9a22c58ce"",
-                    ""path"": ""<PS5DualSenseGamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PS5"",
@@ -885,17 +819,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""d453943a-88f5-4880-b4b4-733222175442"",
                     ""path"": ""<DualSenseGamepadHID>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""Cancel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1fe791d6-1af3-4530-8826-a36b8cfe80a3"",
-                    ""path"": ""<PS5DualSenseGamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PS5"",
@@ -951,17 +874,6 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""7c0ba1be-1f66-4560-a0ef-15290ae432e3"",
                     ""path"": ""<DualSenseGamepadHID>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PS5"",
-                    ""action"": ""ScrollWheel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d90bc042-beb3-4d90-8554-10036e531aa2"",
-                    ""path"": ""<PS5DualSenseGamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PS5"",
@@ -1027,7 +939,46 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""KeyboardNMouse"",
+            ""bindingGroup"": ""KeyboardNMouse"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PS5"",
+            ""bindingGroup"": ""PS5"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<DualSenseGamepadHID>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""XBoxSerX"",
+            ""bindingGroup"": ""XBoxSerX"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<XInputController>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
@@ -1328,6 +1279,33 @@ public partial class @BaseInputActions: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+    private int m_KeyboardNMouseSchemeIndex = -1;
+    public InputControlScheme KeyboardNMouseScheme
+    {
+        get
+        {
+            if (m_KeyboardNMouseSchemeIndex == -1) m_KeyboardNMouseSchemeIndex = asset.FindControlSchemeIndex("KeyboardNMouse");
+            return asset.controlSchemes[m_KeyboardNMouseSchemeIndex];
+        }
+    }
+    private int m_PS5SchemeIndex = -1;
+    public InputControlScheme PS5Scheme
+    {
+        get
+        {
+            if (m_PS5SchemeIndex == -1) m_PS5SchemeIndex = asset.FindControlSchemeIndex("PS5");
+            return asset.controlSchemes[m_PS5SchemeIndex];
+        }
+    }
+    private int m_XBoxSerXSchemeIndex = -1;
+    public InputControlScheme XBoxSerXScheme
+    {
+        get
+        {
+            if (m_XBoxSerXSchemeIndex == -1) m_XBoxSerXSchemeIndex = asset.FindControlSchemeIndex("XBoxSerX");
+            return asset.controlSchemes[m_XBoxSerXSchemeIndex];
+        }
+    }
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
