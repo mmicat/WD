@@ -98,7 +98,7 @@ namespace WitchDoctor.Managers.InputManagement
 
             if (device.GetType() == typeof(DualSenseGamepadHID) || device.GetType() == typeof(XInputController))
             {
-                Debug.Log($"Something happened to gamepad {device}\n Change type: {change}");
+                //Debug.Log($"Something happened to gamepad {device}\n Change type: {change}");
             }
 
             switch (change)
