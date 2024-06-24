@@ -2,17 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
 
 namespace WitchDoctor.GameResources.CharacterScripts
 {
     public class PlayerManager : PlayerEntity
     {
-        private Animator animator;
-        private Rigidbody2D rb;
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private Transform _groundTransform;
+        [SerializeField]
+        private Transform _roofTransform;
+        [SerializeField]
+        private PlayerStats _baseStats;
+        
+        private Rigidbody2D _rb;
+        private PlayerStates _playerStates;
+
+        private float xAxis;
+        private float yAxis;
+        private float gravity;
+        private int stepsJumped;
+
         private Vector2 movement;
         private bool facingRight = true;
-        private bool isGrounded = false;
+
+        private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
+            || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
+            || Physics2D.Raycast(_groundTransform.position + new Vector3(_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer);
+
+        private bool IsRoofed => Physics2D.Raycast(_roofTransform.position, Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
+            || Physics2D.Raycast(_roofTransform.position + new Vector3(-_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
+            || Physics2D.Raycast(_roofTransform.position + new Vector3(_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer);
 
         private Coroutine _inputWaitingCoroutine;
 
@@ -21,8 +44,12 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             base.InitCharacter();
 
-            animator = GetComponent<Animator>();
-            rb = GetComponent<Rigidbody2D>();
+            if (_animator == null) throw new System.NullReferenceException("Missing Animator Component");
+
+            if (_rb == null) _rb = GetComponent<Rigidbody2D>();
+
+            gravity = _rb.gravityScale;
+            _playerStates.Reset();
 
             _inputWaitingCoroutine = StartCoroutine(AddListeners()); // We're waiting for the input system to initialize to avoid race conditions
         }
@@ -34,6 +61,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
                 StopCoroutine(_inputWaitingCoroutine);
                 _inputWaitingCoroutine = null;
             }
+
+            _playerStates.Reset();
 
             RemoveListeners();
 
@@ -55,6 +84,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
         private void RemoveListeners()
         {
+            if (!InputManager.IsInstantiated) return;
             InputManager.InputActions.Player.Movement.performed -= MovementPerformed;
             InputManager.InputActions.Player.Jump.performed -= Jump_performed;
         }
@@ -66,80 +96,148 @@ namespace WitchDoctor.GameResources.CharacterScripts
             if (obj.performed)
             {
                 movement.x = obj.ReadValue<Vector2>().x;
+                movement.y = obj.ReadValue<Vector2>().y;
             }
         }
         
         private void Jump_performed(InputAction.CallbackContext obj)
         {
-            throw new System.NotImplementedException();
+            if (obj.performed && IsGrounded)
+            {
+                _playerStates.jumping = true;
+            }
+        }
+        #endregion
+
+        #region Movement Scripts
+        /// <summary>
+        /// Walk the character in the defined direction
+        /// </summary>
+        /// <param name="MoveDirection">
+        /// Direction of movement
+        /// </param>
+        private void Walk(float MoveDirection)
+        {
+            _rb.velocity = new Vector2(MoveDirection * _baseStats.WalkSpeed, _rb.velocity.y);
+
+            _playerStates.walking = Mathf.Abs(_rb.velocity.x) > 0f;
+
+            _animator.SetBool("Walking", _playerStates.walking);
+        }
+
+        /// <summary>
+        /// Flip the characters direction based on 
+        /// the x axis motion
+        /// </summary>
+        private void Flip()
+        {
+            if (movement.x > 0)
+            {
+                transform.localScale = new Vector2(1, transform.localScale.y);
+            }
+            else if (movement.x < 0)
+            {
+                transform.localScale = new Vector2(-1, transform.localScale.y);
+            }
+        }
+
+        /// <summary>
+        /// Carry out jumping movement as long as
+        /// the jump button is not released
+        /// </summary>
+        private void Jump()
+        {
+            if (_playerStates.jumping)
+            {
+                if (stepsJumped < _baseStats.JumpSteps && !IsRoofed)
+                {
+                    _rb.velocity = new Vector2(_rb.velocity.x, _baseStats.JumpSpeed);
+                    stepsJumped++;
+                }
+                else
+                {
+                    StopJumpSlow();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This limits how fast the player can fall
+        /// Since platformers generally have increased 
+        /// gravity, you don't want them to fall so 
+        /// fast they clip trough all the floors.
+        /// </summary>
+        private void LimitFallSpeed()
+        {
+            
+            if (_rb.velocity.y < -Mathf.Abs(_baseStats.FallSpeed))
+            {
+                _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Clamp(_rb.velocity.y, -Mathf.Abs(_baseStats.FallSpeed), Mathf.Infinity));
+            }
+        }
+
+        /// <summary>
+        /// Update jump states if the jump button
+        /// is released
+        /// </summary>
+        private void CheckJumpStates()
+        {
+            _animator.SetBool("Grounded", IsGrounded);
+            _animator.SetFloat("YVelocity", _rb.velocity.y);
+
+            if (InputManager.InputActions.Player.Jump.WasReleasedThisFrame())
+            {
+                if (stepsJumped < _baseStats.JumpSteps
+                    && stepsJumped > _baseStats.JumpThreshold
+                    && _playerStates.jumping)
+                {
+                    StopJumpQuick();
+                }
+                else if (stepsJumped < _baseStats.JumpThreshold
+                    && _playerStates.jumping)
+                {
+                    StopJumpSlow();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Stops the player jump immediately, 
+        /// causing them to start falling as 
+        /// soon as the button is released
+        /// </summary>
+        private void StopJumpQuick()
+        {
+            stepsJumped = 0;
+            _playerStates.jumping = false;
+            _rb.velocity = new Vector2(_rb.velocity.x, 0f);
+        }
+
+        /// <summary>
+        /// stops the jump but lets the player 
+        /// hang in the air for awhile.
+        /// </summary>
+        private void StopJumpSlow()
+        {
+            stepsJumped = 0;
+            _playerStates.jumping = false;
         }
         #endregion
 
         // Update is called once per frame
         void Update()
         {
-            // Get input from keyboard
-            // movement.x = Input.GetAxis("Horizontal");
-
-            // Set animation parameters
-            animator.SetFloat("Speed", Mathf.Abs(movement.x));
-
-
-            // Flip the character based on movement direction
-            if (movement.x > 0 && !facingRight)
-            {
-                Flip();
-            }
-            else if (movement.x < 0 && facingRight)
-            {
-                Flip();
-            }
-
-            // Check if jump is pressed
-            //if (Input.GetButtonDown("Jump") && isGrounded)
-            //{
-            //    rb.AddForce(new Vector2(0f, _jumpForce), ForceMode2D.Impulse);
-            //    animator.SetBool("IsJumping", true);
-            //    Debug.Log("Jumping");
-            //}
-
+            CheckJumpStates();
+            Flip();
+            Walk(movement.x);
+           
         }
 
         void FixedUpdate()
         {
-            // Move the character
-            rb.velocity = new Vector2(movement.x * _speed, rb.velocity.y);
-            // Debug.Log("Horizontal Input: " + movement.x + ", Velocity: " + rb.velocity);
-        }
-
-        void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded = true;
-                animator.SetBool("IsJumping", false);
-                Debug.Log("Player landed on the ground.");
-            }
-        }
-
-        void OnCollisionExit2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded = false;
-                Debug.Log("Player left the ground.");
-            }
-        }
-
-        void Flip()
-        {
-            // Switch the way the player is labeled as facing
-            facingRight = !facingRight;
-
-            // Multiply the player's x local scale by -1
-            Vector3 theScale = transform.localScale;
-            theScale.x *= -1;
-            transform.localScale = theScale;
+            Jump();
+            LimitFallSpeed();
         }
     }
 }
