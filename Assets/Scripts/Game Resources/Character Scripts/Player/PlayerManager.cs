@@ -225,7 +225,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         }
         #endregion
 
-        // Update is called once per frame
+        #region Unity Methods
         void Update()
         {
             CheckJumpStates();
@@ -239,5 +239,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
             Jump();
             LimitFallSpeed();
         }
+        #endregion
     }
 }
