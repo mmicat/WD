@@ -4,6 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using WitchDoctor.CoreResources.Utils.Singleton;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace WitchDoctor.CoreResources.Managers.CameraManagement
 {
@@ -13,6 +14,8 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         [SerializeField] private CinemachineVirtualCamera[] _allVirtualCameras;
 
         private Coroutine _lerpTPanCoroutine;
+        private Coroutine _panCameraCoroutine;
+
         private CinemachineFramingTransposer _framingTransposer;
 
         #region Player Camera Tuning Variables
@@ -20,11 +23,11 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         [SerializeField] private float _fallPanAmount = 0.25f;
         [SerializeField] private float _fallYPanTime = 0.35f;
         
+        private float _initialYPanAmount;
+        private Vector2 _initialTrackedObjectOffset;
+
         public static bool IsLerpingYDamping { get; private set; }
         public static bool LerpedFromPlayerFalling { get; private set; }
-
-
-        private float _normYPanAmount;
         #endregion
 
         #region Overrides
@@ -36,17 +39,15 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
             {
                 if (_allVirtualCameras[i].enabled)
                 {
-                    // set the current active camera
-                    _currentCamera = _allVirtualCameras[i];
-
-                    // set the framing transposer
-                    _framingTransposer = _currentCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-
+                    SetCurrentCamera(_allVirtualCameras[i]);
                 }
             }
 
-            // set the YDamping amount so that it's based on the inspector value
-            _normYPanAmount = _framingTransposer.m_YDamping;
+            // set the initial YDamping amount so that it's based on the inspector value
+            _initialYPanAmount = _framingTransposer.m_YDamping;
+
+            // set the initial position of the tracked object offset
+            _initialTrackedObjectOffset = _framingTransposer.m_TrackedObjectOffset;
         }
 
         public override void CleanSingleton()
@@ -56,22 +57,6 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         #endregion
 
         #region Public Methods
-        
-        /// <summary>
-        /// Lerp the Y Damping value of the framing transposer 
-        /// for the current virtual camera. Helps improve the 
-        /// camera when falling
-        /// </summary>
-        /// <param name="isPlayerFalling">
-        /// Changes the lerp method depending on whether the 
-        /// player is falling
-        /// </param>
-        public void LerpYDamping(bool isPlayerFalling)
-        {
-            _lerpTPanCoroutine = StartCoroutine(LerpYAction(isPlayerFalling));
-        }
-
-
         /// <summary>
         /// Change the confiner for the main player camera for each round 
         /// </summary>
@@ -80,10 +65,13 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         /// </param>
         public void ChangeCameraConfiner(Collider2D confiningShape)
         {
-            var playerCamera = FindPlayerCamera();
+            var playerCameras = FindPlayerCameras();
 
-            var confiner = playerCamera.GetComponent<CinemachineConfiner>();
-            confiner.m_BoundingShape2D = confiningShape;
+            for (int i = 0; i < playerCameras.Count; i++)
+            {
+                var confiner = playerCameras[i].GetComponent<CinemachineConfiner>();
+                confiner.m_BoundingShape2D = confiningShape;
+            }
         }
 
         /// <summary>
@@ -94,24 +82,101 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         /// </param>
         public void SetCameraFollow(Transform toFollow)
         {
-            var playerCamera = FindPlayerCamera();
+            var playerCameras = FindPlayerCameras();
 
-            playerCamera.Follow = toFollow;
+            for (int i = 0; i < playerCameras.Count; i++)
+            {
+                playerCameras[i].Follow = toFollow;
+            }
+        }
+
+        /// <summary>
+        /// Lerp the Y Damping value of the framing transposer 
+        /// for the current virtual camera. Helps improve the 
+        /// camera when falling
+        /// </summary>
+        /// <param name="isPlayerFalling">
+        /// Changes the lerp method depending on whether the 
+        /// player is falling
+        /// </param>
+        public void LerpTransposerYDamping(bool isPlayerFalling)
+        {
+            if (_lerpTPanCoroutine != null)
+            {
+                StopCoroutine(_lerpTPanCoroutine);
+            }
+
+            _lerpTPanCoroutine = StartCoroutine(LerpYDamping_Coroutine(isPlayerFalling));
+        }
+
+        /// <summary>
+        /// Pan Camera to a specified direction and 
+        /// distance as an offset of the original 
+        /// tracked object offset.
+        /// </summary>
+        /// <param name="panDistance">the total distance of the pan</param>
+        /// <param name="panTime">the time for the pan to complete</param>
+        /// <param name="panDirection">the direction of the pan</param>
+        /// <param name="panToStartingPos">set true to set back to initial position</param>
+        public void PanCamera(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos)
+        {
+            if (_panCameraCoroutine != null)
+            {
+                StopCoroutine(_panCameraCoroutine);
+            }
+
+            _panCameraCoroutine = StartCoroutine(PanCamera_Coroutine(panDistance, panTime, panDirection, panToStartingPos));
+        }
+
+        public void SwapCamera(CinemachineVirtualCamera leftCam, CinemachineVirtualCamera rightCam, Vector2 triggerExitDirection)
+        {
+            // if the current camera is the camera on the left and our trigger exit direction was on the right
+            if (_currentCamera == leftCam && triggerExitDirection.x > 0f)
+            {
+                // activate the new camera
+                rightCam.enabled = true;
+
+                // deactivate the old camera
+                leftCam.enabled = false;
+
+                // set the new camera as the current camera
+                SetCurrentCamera(rightCam);
+            }
+
+            // if the current camera is the camera on the right and our trigger exit direction was on the left
+            if (_currentCamera == rightCam && triggerExitDirection.x < 0f)
+            {
+                // activate the new camera
+                leftCam.enabled = true;
+
+                // deactivate the old camera
+                rightCam.enabled = false;
+
+                // set the new camera as the current camera
+                SetCurrentCamera(leftCam);
+            }
         }
         #endregion
 
         #region Internal Methods
-        private CinemachineVirtualCamera FindPlayerCamera()
+        private void SetCurrentCamera(CinemachineVirtualCamera currCam)
+        {
+            _currentCamera = currCam;
+            _framingTransposer = currCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+        }
+
+
+        private List<CinemachineVirtualCamera> FindPlayerCameras()
         {
             if (_allVirtualCameras == null || _allVirtualCameras.Length == 0)
                 return null;
 
-            var cam = _allVirtualCameras.First((x) => x.tag == "PlayerCamera");
+            var cam = _allVirtualCameras.Where((x) => x.tag == "PlayerCamera").ToList();
 
             return cam;
         }
 
-        private IEnumerator LerpYAction(bool isPlayerFalling)
+        private IEnumerator LerpYDamping_Coroutine(bool isPlayerFalling)
         {
             IsLerpingYDamping = true;
 
@@ -129,7 +194,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
             else
             {
                 LerpedFromPlayerFalling = false;
-                endDampAmount = _normYPanAmount;
+                endDampAmount = _initialYPanAmount;
             }
 
             // lerp the pan amount
@@ -145,6 +210,55 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
             }
 
             IsLerpingYDamping = false;
+        }
+
+        private IEnumerator PanCamera_Coroutine(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos)
+        {
+            Vector2 endPos = Vector2.zero;
+            Vector2 startingPos = Vector2.zero;
+
+            // handle pan from trigger
+            if (!panToStartingPos)
+            {
+                switch (panDirection)
+                {
+                    case PanDirection.Up:
+                        endPos = Vector2.up;
+                        break;
+                    case PanDirection.Down:
+                        endPos = Vector2.down;
+                        break;
+                    case PanDirection.Left:
+                        endPos = Vector2.left;
+                        break;
+                    case PanDirection.Right:
+                        endPos = Vector2.right;
+                        break;
+                }
+
+                endPos *= panDistance;
+
+                startingPos = _initialTrackedObjectOffset;
+
+                endPos += startingPos;
+            }
+            // handle pan back to starting position
+            else
+            {
+                startingPos = _framingTransposer.m_TrackedObjectOffset;
+                endPos = _initialTrackedObjectOffset;
+            }
+
+            float elapsedTime = 0f;
+            while (elapsedTime < panTime)
+            {
+                elapsedTime += Time.deltaTime;
+
+                Vector2 panLerp = Vector2.Lerp(startingPos, endPos, (elapsedTime / panTime));
+                _framingTransposer.m_TrackedObjectOffset = panLerp;
+
+                yield return null;
+            }
         }
         #endregion
 

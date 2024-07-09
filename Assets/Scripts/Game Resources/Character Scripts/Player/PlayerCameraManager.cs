@@ -60,13 +60,13 @@ namespace WitchDoctor.GameResources.CharacterScripts
             // if we are falling past a certain speed threshold
             if (_rb.velocity.y < _fallSpeedChangeThreshold && !CameraManager.IsLerpingYDamping && !CameraManager.LerpedFromPlayerFalling)
             {
-                CameraManager.Instance.LerpYDamping(true);
+                CameraManager.Instance.LerpTransposerYDamping(true);
             }
 
             // if we are standing stil or still moving up
             if (_rb.velocity.y >= 0f && !CameraManager.IsLerpingYDamping && CameraManager.LerpedFromPlayerFalling)
             {
-                CameraManager.Instance.LerpYDamping(false);
+                CameraManager.Instance.LerpTransposerYDamping(false);
             }
         }
     }
