@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using Cinemachine;
+using WitchDoctor.CoreResources.Managers.CameraManagement;
 
 namespace WitchDoctor.GameResources.CharacterScripts
 {
@@ -13,26 +13,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [SerializeField] private Rigidbody2D _rb;
         [SerializeField] private Transform _characterRenderTransform;
         [SerializeField] private Transform _cameraFollowTransform;
-        [SerializeField] private float _flipRotationTime = 0.4f;
 
         private TweenerCore<Quaternion, Vector3, QuaternionOptions> _cameraFollowTween;
 
-        [SerializeField] private CinemachineVirtualCamera[] _allVirtualCameras;
-
-        [Header("Controls for lerping the Y Damping during player jump/fall")]
-        [SerializeField] private float _fallPanAmount = 0.25f;
-        [SerializeField] private float _fallYPanTime = 0.35f;
-        public float _fallSpeedChangeThreshold = -15f;
-
-        public bool IsLerpingYDamping { get; private set; }
-        public bool LerpedFromPlayerFalling { get; private set; }
-
-        private Coroutine _lerpTPanCoroutine;
-
-        private CinemachineVirtualCamera _currentCamera;
-        private CinemachineFramingTransposer _framingTransposer;
-
-        private float _normYPanAmount;
+        [SerializeField] private float _flipRotationTime = 0.4f;
+        [SerializeField] private float _fallSpeedChangeThreshold = -15f;
 
         #region Overrides
         public override void InitManager()
@@ -44,26 +29,14 @@ namespace WitchDoctor.GameResources.CharacterScripts
             _cameraFollowTransform = InitializationContext.CameraFollowTransform;
             _flipRotationTime = InitializationContext.FlipRotationTime;
 
-            for (int i = 0; i < _allVirtualCameras.Length; i++)
-            {
-                if (_allVirtualCameras[i].enabled)
-                {
-                    // set the current active camera
-                    _currentCamera = _allVirtualCameras[i];
-
-                    // set the framing transposer
-                    _framingTransposer = _currentCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-
-                }
-            }
-
-            // set the YDamping amount so that it's based on the inspector value
-            _normYPanAmount = _framingTransposer.m_YDamping;
+            
         }
 
         public override void DeInitManager()
         {
+            _rb = null;
             _characterRenderTransform = null;
+            _cameraFollowTransform = null;
 
             base.DeInitManager();
         }
@@ -81,60 +54,19 @@ namespace WitchDoctor.GameResources.CharacterScripts
             _cameraFollowTween = _cameraFollowTransform.DORotate(_characterRenderTransform.rotation.eulerAngles, _flipRotationTime);
         }
 
-        public void LerpYDamping(bool isPlayerFalling)
-        {
-            _lerpTPanCoroutine = StartCoroutine(LerpYAction(isPlayerFalling));
-        }
-
-        private IEnumerator LerpYAction(bool isPlayerFalling)
-        {
-            IsLerpingYDamping = true;
-
-            // grab the starting damping amount
-            float startDampAmount = _framingTransposer.m_YDamping;
-            float endDampAmount = 0f;
-
-            // determine the end of the damping amount
-            if (isPlayerFalling)
-            {
-                endDampAmount = _fallPanAmount;
-                LerpedFromPlayerFalling = true;
-            }
-
-            else
-            {
-                endDampAmount = _normYPanAmount;
-            }
-
-            // lerp the pan amount
-            float elapsedTime = 0f;
-            while (elapsedTime < _fallYPanTime)
-            {
-                elapsedTime += Time.deltaTime;
-
-                float lerpedPanAmount = Mathf.Lerp(startDampAmount, endDampAmount, (elapsedTime / _fallYPanTime));
-                _framingTransposer.m_YDamping = lerpedPanAmount;
-
-                yield return null;
-            }
-
-            IsLerpingYDamping = false;
-        }
 
         private void Update()
         {
             // if we are falling past a certain speed threshold
-            if (_rb.velocity.y < _fallSpeedChangeThreshold && !IsLerpingYDamping && !LerpedFromPlayerFalling)
+            if (_rb.velocity.y < _fallSpeedChangeThreshold && !CameraManager.IsLerpingYDamping && !CameraManager.LerpedFromPlayerFalling)
             {
-                LerpYDamping(true);
+                CameraManager.Instance.LerpYDamping(true);
             }
 
             // if we are standing stil or still moving up
-            if (_rb.velocity.y >= 0f && !IsLerpingYDamping && LerpedFromPlayerFalling)
+            if (_rb.velocity.y >= 0f && !CameraManager.IsLerpingYDamping && CameraManager.LerpedFromPlayerFalling)
             {
-                LerpedFromPlayerFalling = false;
-
-                LerpYDamping(false);
+                CameraManager.Instance.LerpYDamping(false);
             }
         }
     }
