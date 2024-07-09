@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
 
@@ -9,6 +13,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
 {
     public class PlayerManager : PlayerEntity
     {
+        #region Movement and Physics
+        [SerializeField]
+        private Transform _characterRenderTransform;
+        [SerializeField]
+        private Transform _cameraFollowTransform;
         [SerializeField]
         private Animator _animator;
         [SerializeField]
@@ -27,7 +36,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private int stepsJumped;
 
         private Vector2 movement;
-        private bool facingRight = true;
+        // private bool facingRight = true;
 
         private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
             || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
@@ -36,17 +45,40 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private bool IsRoofed => Physics2D.Raycast(_roofTransform.position, Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
             || Physics2D.Raycast(_roofTransform.position + new Vector3(-_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
             || Physics2D.Raycast(_roofTransform.position + new Vector3(_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer);
+        #endregion
 
         private Coroutine _inputWaitingCoroutine;
 
+        [SerializeField] private float _flipRotationTime = 0.4f;
+        private TweenerCore<Quaternion, Vector3, QuaternionOptions> _cameraFollowTween;
+        private bool _cameraFollowFacingRight = true;
+        private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
+
+        #region Entity Managers
+        [SerializeField] private PlayerCameraManager _playerCameraManager;
+        #endregion
+
         #region Overrides
+        protected override void SetManagerContexts()
+        {
+            _managerList = new List<IGameEntityManager>()
+            {
+                _playerCameraManager.SetContext(
+                    new PlayerCameraManagerContext(
+                        _rb,
+                        _characterRenderTransform, 
+                        _cameraFollowTransform, 
+                        _flipRotationTime))
+            };
+        }
+
         protected override void InitCharacter()
         {
-            base.InitCharacter();
-
+            if (_rb == null) _rb = GetComponent<Rigidbody2D>();
             if (_animator == null) throw new System.NullReferenceException("Missing Animator Component");
 
-            if (_rb == null) _rb = GetComponent<Rigidbody2D>();
+            base.InitCharacter();
+
 
             gravity = _rb.gravityScale;
             _playerStates.Reset();
@@ -131,13 +163,18 @@ namespace WitchDoctor.GameResources.CharacterScripts
         /// </summary>
         private void Flip()
         {
-            if (movement.x > 0)
+            var orientation = CharacterRenderFacingRight;
+            if (movement.x > 0 && !orientation)
             {
-                transform.localScale = new Vector2(1, transform.localScale.y);
+                var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
+                _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                _playerCameraManager.FlipCameraFollow();
             }
-            else if (movement.x < 0)
+            else if (movement.x < 0 && orientation)
             {
-                transform.localScale = new Vector2(-1, transform.localScale.y);
+                var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
+                _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                _playerCameraManager.FlipCameraFollow();
             }
         }
 
@@ -201,7 +238,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
             }
         }
 
-
         /// <summary>
         /// Stops the player jump immediately, 
         /// causing them to start falling as 
@@ -229,16 +265,16 @@ namespace WitchDoctor.GameResources.CharacterScripts
         void Update()
         {
             CheckJumpStates();
-            Flip();
             Walk(movement.x);
-           
         }
 
         void FixedUpdate()
         {
+            Flip();
             Jump();
             LimitFallSpeed();
         }
+
         #endregion
     }
 }

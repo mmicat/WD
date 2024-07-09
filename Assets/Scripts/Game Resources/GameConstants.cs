@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameConstants
+namespace WitchDoctor.GameResources
 {
+    public static class GameConstants
+    {
     
+    }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,40 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public int ContactDamage => _contactDamage;
         #endregion
 
+        #region Entity Managers
+        protected List<IGameEntityManager> _managerList;
+
+        /// <summary>
+        /// Implement this method to setup any 
+        /// managers that are controlled by this 
+        /// parent entity. They will be initialized 
+        /// automatically
+        /// </summary>
+        protected abstract void SetManagerContexts();
+
+        protected void InitializeManagers()
+        {
+            if (_managerList == null || _managerList.Count <= 0)
+                return;
+
+            for (int i = 0; i < _managerList.Count; i++)
+                _managerList[i].InitManager();
+        }
+
+        protected void DeInitializeManagers()
+        {
+            if (_managerList == null || _managerList.Count <= 0)
+                return;
+
+            for (int i = 0; i < _managerList.Count; i++)
+            {
+                _managerList[i].DeInitManager();
+            }
+
+            _managerList.Clear();
+        }
+        #endregion
+
         public void TakeDamage(int damage)
         {
             OnDamageTaken(damage);
@@ -63,12 +98,13 @@ namespace WitchDoctor.GameResources.CharacterScripts
         #region Internal Methods
         protected virtual void InitCharacter()
         {
-            throw new System.NotImplementedException();
+            SetManagerContexts();
+            InitializeManagers();
         }
 
         protected virtual void DeInitCharacter()
         {
-            throw new System.NotImplementedException();
+            DeInitializeManagers();
         }
 
         protected virtual void OnDamageTaken(int damage)
@@ -82,13 +118,15 @@ namespace WitchDoctor.GameResources.CharacterScripts
     {
         protected override void InitCharacter()
         {
+            base.InitCharacter();
+            
             _isPlayer = true;
             _contactDamage = 0;
         }
 
         protected override void DeInitCharacter()
         {
-            
+            base.DeInitCharacter();
         }
     }
 
@@ -96,12 +134,61 @@ namespace WitchDoctor.GameResources.CharacterScripts
     {
         protected override void InitCharacter()
         {
+            base.InitCharacter();
             _isPlayer = false;
         }
 
         protected override void DeInitCharacter()
         {
-
+            base.DeInitCharacter();
         }
+    }
+
+
+    public interface IGameEntityManager
+    {
+        public IGameEntityManager SetContext(IGameEntityManagerContext context);
+
+        public void InitManager();
+
+        public void DeInitManager();
+    }
+
+    public interface IGameEntityManagerContext
+    {
+
+    }
+
+    public abstract class GameEntityManager<TEntityManager, TEntityManagerContext> : MonoBehaviour, IGameEntityManager
+        where TEntityManager : GameEntityManager<TEntityManager, TEntityManagerContext>, new()
+        where TEntityManagerContext : GameEntityManagerContext<TEntityManager, TEntityManagerContext>
+    {
+        protected TEntityManagerContext InitializationContext { get; private set; }
+
+        public virtual IGameEntityManager SetContext(IGameEntityManagerContext context)
+        {
+            if (!(context is TEntityManagerContext)) // Ensures the called context is of the same associated type as the manager
+                throw new InvalidCastException($"Attempting to use incorrect context: {context.GetType()} for current manager: {typeof(TEntityManager)}.\nPlease use correct context: {typeof(TEntityManagerContext)}");
+
+            InitializationContext = context as TEntityManagerContext;
+            return this as TEntityManager;
+        }
+
+        public virtual void InitManager()
+        {
+            if (InitializationContext == null)
+                InitializationContext = default;
+        }
+
+        public virtual void DeInitManager()
+        {
+        }
+    }
+
+    public abstract class GameEntityManagerContext<TEntityManager, TEntityManagerContext> : IGameEntityManagerContext
+        where TEntityManager : GameEntityManager<TEntityManager, TEntityManagerContext>, new()
+        where TEntityManagerContext : GameEntityManagerContext<TEntityManager, TEntityManagerContext>
+    {
+        
     }
 }

@@ -69,6 +69,7 @@ namespace WitchDoctor.Managers.InputManagement
             InputActions.Player.Enable();
             InputActions.UI.Enable(); // Even if this works maybe we should disable this later
             _playerInput.neverAutoSwitchControlSchemes = true;
+            _playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
 
             InputSystem.onDeviceChange += OnInputChanged;
             _playerInput.onControlsChanged += OnControlSchemeSwitched;
