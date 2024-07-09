@@ -1,9 +1,9 @@
 using Cinemachine;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace WitchDoctor.CoreResources.Managers.CameraManagement
 {
@@ -74,6 +74,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         [HideInInspector] public float panTime = 0.35f;
     }
 
+#if UNITY_EDITOR
     [CustomEditor(typeof(CameraTrigger))]
     public class CamTriggerScriptEditor : Editor
     {
@@ -122,4 +123,5 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
             }
         }
     }
+#endif
 }
