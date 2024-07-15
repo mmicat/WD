@@ -17,7 +17,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private Transform _roofTransform;
         [SerializeField]
         private PlayerStats _baseStats;
-        
+
         private Rigidbody2D _rb;
         private PlayerStates _playerStates;
 
@@ -29,9 +29,9 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private Vector2 movement;
         private bool facingRight = true;
 
-        private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
-            || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
-            || Physics2D.Raycast(_groundTransform.position + new Vector3(_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer);
+        private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer)
+           || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer)
+           || Physics2D.Raycast(_groundTransform.position + new Vector3(_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer);
 
         private bool IsRoofed => Physics2D.Raycast(_roofTransform.position, Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
             || Physics2D.Raycast(_roofTransform.position + new Vector3(-_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
@@ -223,6 +223,49 @@ namespace WitchDoctor.GameResources.CharacterScripts
             stepsJumped = 0;
             _playerStates.jumping = false;
         }
+
+        private float GetSlopeAngle()
+        {
+            Vector2 rayStart = _groundTransform.position;
+            rayStart.y += 0.8f; // Adjust this value to position the raycast higher
+            Vector2 rayDirection = Vector2.down;
+            float rayDistance = 2f;
+            LayerMask rayLayer = _baseStats.GroundLayer;
+
+            Debug.DrawRay(rayStart, rayDirection * rayDistance, Color.green); // Draw the raycast in the scene view
+
+            RaycastHit2D hit = Physics2D.Raycast(rayStart, rayDirection, rayDistance, rayLayer);
+            if (hit)
+            {
+                Vector2 normal = hit.normal;
+                float angle = Vector2.Angle(normal, Vector2.up);
+                return angle;
+            }
+            return 0f;
+        }
+
+
+
+
+        private void HandleSlope()
+        {
+            float slopeAngle = GetSlopeAngle();
+          
+
+            Debug.Log("Current Slope Angle: " + slopeAngle); // Print the slope angle to the console
+
+
+            if (slopeAngle > 0f )
+            {
+                _rb.gravityScale = 0; // Disable gravity
+                _rb.velocity = new Vector2(_rb.velocity.x, 0); // Stop vertical movement
+            }
+            else
+            {
+                _rb.gravityScale = 10; // Enable gravity
+            }
+        }
+
         #endregion
 
         #region Unity Methods
@@ -231,13 +274,13 @@ namespace WitchDoctor.GameResources.CharacterScripts
             CheckJumpStates();
             Flip();
             Walk(movement.x);
-           
         }
 
         void FixedUpdate()
         {
             Jump();
             LimitFallSpeed();
+            HandleSlope(); // Add this line to handle slope logic
         }
         #endregion
     }
