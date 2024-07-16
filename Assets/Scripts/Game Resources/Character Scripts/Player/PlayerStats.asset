@@ -17,6 +17,9 @@ MonoBehaviour:
   FallSpeed: 45
   JumpSteps: 20
   JumpThreshold: 7
+  _dashingVelocity: 25
+  _dashingTime: 0.5
+  _dashingRefreshTime: 0.9
   GroundCheckY: 0.2
   GroundCheckX: 1
   GroundLayer:

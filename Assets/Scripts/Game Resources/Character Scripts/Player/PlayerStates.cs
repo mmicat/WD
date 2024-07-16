@@ -7,10 +7,13 @@ namespace WitchDoctor.GameResources.CharacterScripts
     public struct PlayerStates
     {
         public bool walking;
+        public bool jumping;
+        public bool dashing;
+        public bool dashRefreshed;
+        public bool dashConditionsMet;
         public bool interact;
         public bool interacting;
         public bool lookingRight;
-        public bool jumping;
         public bool recoilingX;
         public bool recoilingY;
         public bool casting;
@@ -23,10 +26,13 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public void Reset()
         {
             walking = false;
+            jumping = false;
+            dashing = false;
+            dashRefreshed = true;
+            dashConditionsMet = true;
             interact = false;
             interacting = false;
             lookingRight = false;
-            jumping = false;
             recoilingX = false;
             recoilingY = false;
             casting = false;

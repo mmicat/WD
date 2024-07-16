@@ -21,6 +21,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [SerializeField]
         private Animator _animator;
         [SerializeField]
+        private TrailRenderer _dashTrail;
+        [SerializeField]
         private Transform _groundTransform;
         [SerializeField]
         private Transform _roofTransform;
@@ -36,7 +38,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private int stepsJumped;
 
         private Vector2 movement;
-        // private bool facingRight = true;
+
+        // Dashing
+        private Vector2 _dashDir;
+        
+        private Coroutine _dashingCoroutine;
 
         private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
             || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
@@ -50,7 +56,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private Coroutine _inputWaitingCoroutine;
 
         [SerializeField] private float _flipRotationTime = 0.4f;
-        private TweenerCore<Quaternion, Vector3, QuaternionOptions> _cameraFollowTween;
         private bool _cameraFollowFacingRight = true;
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
@@ -78,7 +83,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
             if (_animator == null) throw new System.NullReferenceException("Missing Animator Component");
 
             base.InitCharacter();
-
 
             gravity = _rb.gravityScale;
             _playerStates.Reset();
@@ -109,16 +113,17 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
             InputManager.InputActions.Player.Movement.performed += MovementPerformed;
             InputManager.InputActions.Player.Jump.performed += Jump_performed;
+            InputManager.InputActions.Player.Dash.performed += Dash_performed;
 
             _inputWaitingCoroutine = null;
         }
-
 
         private void RemoveListeners()
         {
             if (!InputManager.IsInstantiated) return;
             InputManager.InputActions.Player.Movement.performed -= MovementPerformed;
             InputManager.InputActions.Player.Jump.performed -= Jump_performed;
+            InputManager.InputActions.Player.Dash.performed -= Dash_performed;
         }
         #endregion
 
@@ -136,7 +141,26 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             if (obj.performed && IsGrounded)
             {
+                if (_playerStates.dashing)
+                {
+                    StopDashQuick();
+                }
+
                 _playerStates.jumping = true;
+
+            }
+        }
+
+        private void Dash_performed(InputAction.CallbackContext obj)
+        {
+            if (obj.performed && _playerStates.dashConditionsMet)
+            {
+                if (_playerStates.jumping)
+                {
+                    StopJumpSlow();
+                }
+
+                _playerStates.dashing = true;
             }
         }
         #endregion
@@ -198,6 +222,44 @@ namespace WitchDoctor.GameResources.CharacterScripts
             }
         }
 
+        private void Dash()
+        {
+            if (_playerStates.dashing)
+            {
+                
+
+                _playerStates.dashRefreshed = false;
+                _playerStates.dashConditionsMet = false;
+
+                _dashTrail.emitting = true;
+                _dashDir = CharacterRenderFacingRight ? Vector2.right : Vector2.left;
+
+                _rb.velocity = _dashDir * _baseStats._dashingVelocity;
+
+                _dashingCoroutine = StartCoroutine(StopDash_Coroutine());
+            }
+        }
+
+        private IEnumerator StopDash_Coroutine()
+        {
+            yield return new WaitForSeconds(_baseStats._dashingTime);
+            _playerStates.dashing = false;
+            _dashTrail.emitting = false;
+            yield return new WaitForSeconds(_baseStats._dashingRefreshTime);
+            _playerStates.dashRefreshed = true;
+
+            _dashingCoroutine = null;
+        }
+
+        private void StopDashQuick()
+        {
+            _playerStates.dashing = false;
+            _dashTrail.emitting = false;
+            _playerStates.dashRefreshed = true;
+
+            _rb.velocity = new Vector2(0, _rb.velocity.y);
+        }
+
         /// <summary>
         /// This limits how fast the player can fall
         /// Since platformers generally have increased 
@@ -217,9 +279,10 @@ namespace WitchDoctor.GameResources.CharacterScripts
         /// Update jump states if the jump button
         /// is released
         /// </summary>
-        private void CheckJumpStates()
+        private void UpdateMovementStates()
         {
             _animator.SetBool("Grounded", IsGrounded);
+            _animator.SetBool("Dash", _playerStates.dashing);
             _animator.SetFloat("YVelocity", _rb.velocity.y);
 
             if (InputManager.InputActions.Player.Jump.WasReleasedThisFrame())
@@ -235,6 +298,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
                 {
                     StopJumpSlow();
                 }
+            }
+
+            if (!_playerStates.dashConditionsMet && _playerStates.dashRefreshed && IsGrounded)
+            {
+                _playerStates.dashConditionsMet = true;
             }
         }
 
@@ -264,7 +332,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         #region Unity Methods
         void Update()
         {
-            CheckJumpStates();
+            UpdateMovementStates();
             Walk(movement.x);
         }
 
@@ -272,6 +340,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             Flip();
             Jump();
+            Dash();
             LimitFallSpeed();
         }
 

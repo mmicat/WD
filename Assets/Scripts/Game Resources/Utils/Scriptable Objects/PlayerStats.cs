@@ -20,6 +20,13 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
 
         [Space(5)]
 
+        [Header("Dashing")]
+        public float _dashingVelocity = 14f;
+        public float _dashingTime = 0.5f;
+        public float _dashingRefreshTime = 0.8f;
+
+        [Space(5)]
+
         [Header("Ground Checking")]
         public float GroundCheckY = 0.2f; //How far on the Y axis the groundcheck Raycast goes.
         public float GroundCheckX = 1f; //Same as above but for X.
