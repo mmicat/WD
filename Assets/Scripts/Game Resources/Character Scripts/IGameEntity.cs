@@ -22,11 +22,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
         protected int _currHealth;
         protected int _contactDamage;
 
-        [SerializeField]
-        protected float _speed;
-        [SerializeField]
-        protected float _jumpForce;
-
         public bool IsPlayer => _isPlayer;
 
         public int MaxHealth => _maxHealth;

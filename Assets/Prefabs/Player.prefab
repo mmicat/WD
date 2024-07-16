@@ -219,8 +219,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0c729d90f8cb5a478800602b1ab183d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 8
-  _jumpForce: 10
   _characterRenderTransform: {fileID: 872684005428060351}
   _cameraFollowTransform: {fileID: 4830769884952559958}
   _animator: {fileID: 4738049782596129069}
@@ -245,10 +243,6 @@ MonoBehaviour:
   _characterRenderTransform: {fileID: 0}
   _cameraFollowTransform: {fileID: 0}
   _flipRotationTime: 0.4
-  _allVirtualCameras:
-  - {fileID: 0}
-  _fallPanAmount: 0.25
-  _fallYPanTime: 0.35
   _fallSpeedChangeThreshold: -15
 --- !u!50 &31765690009589836
 Rigidbody2D:
