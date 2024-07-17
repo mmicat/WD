@@ -17,8 +17,8 @@ MonoBehaviour:
   FallSpeed: 45
   JumpSteps: 20
   JumpThreshold: 7
-  GroundCheckY: 0.2
-  GroundCheckX: 1
+  GroundCheckY: 1.58
+  GroundCheckX: 5
   GroundLayer:
     serializedVersion: 2
     m_Bits: 64
