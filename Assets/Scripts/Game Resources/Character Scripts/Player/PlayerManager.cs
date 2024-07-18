@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
 
@@ -23,11 +20,17 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [SerializeField]
         private TrailRenderer _dashTrail;
         [SerializeField]
+        private PlayerStats _baseStats;
+
+        [Space(5)]
+        
+        [Header("Platform Checks")]
+        [SerializeField]
         private Transform _groundTransform;
         [SerializeField]
-        private Transform _roofTransform;
+        private Transform _ledgeTransform;
         [SerializeField]
-        private PlayerStats _baseStats;
+        private Transform _roofTransform;
         
         private Rigidbody2D _rb;
         private PlayerStates _playerStates;
@@ -42,15 +45,23 @@ namespace WitchDoctor.GameResources.CharacterScripts
         // Dashing
         private Vector2 _dashDir;
         
-        private Coroutine _dashingCoroutine;
+        private Coroutine _dashCancelCoroutine;
+        private Coroutine _dashLedgeCancelCoroutine;
 
-        private bool IsGrounded => Physics2D.Raycast(_groundTransform.position, Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
-            || Physics2D.Raycast(_groundTransform.position + new Vector3(-_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer) 
-            || Physics2D.Raycast(_groundTransform.position + new Vector3(_baseStats.GroundCheckX, 0), Vector2.down, _baseStats.GroundCheckY, _baseStats.GroundLayer);
+        #endregion
 
-        private bool IsRoofed => Physics2D.Raycast(_roofTransform.position, Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
-            || Physics2D.Raycast(_roofTransform.position + new Vector3(-_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer)
-            || Physics2D.Raycast(_roofTransform.position + new Vector3(_baseStats.RoofCheckX, 0), Vector2.up, _baseStats.RoofCheckY, _baseStats.GroundLayer);
+        #region Platform Checks
+        // Debug Properties
+        [SerializeField]
+        private bool _debugGroundRaycast, _debugLedgeRaycast, _debugRoofRaycast;
+
+        private bool IsGrounded => Physics2D.BoxCast(_groundTransform.position, new Vector2(_baseStats.GroundCheckX, _baseStats.GroundCheckY), 
+            0f, Vector2.down, _baseStats.GroundCheckDist, _baseStats.GroundLayer);
+
+        private bool IsNextToLedge => !Physics2D.BoxCast(_ledgeTransform.position, new Vector2(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY), 
+            0f, Vector2.down, _baseStats.LedgeCheckDist, _baseStats.GroundLayer);
+        private bool IsRoofed => Physics2D.BoxCast(_roofTransform.position, new Vector2(_baseStats.RoofCheckX, _baseStats.RoofCheckY), 
+            0f, Vector2.up, _baseStats.RoofCheckDist, _baseStats.GroundLayer);
         #endregion
 
         private Coroutine _inputWaitingCoroutine;
@@ -60,6 +71,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
         #region Entity Managers
+        [Space(5)][Header("Entity Managers")]
         [SerializeField] private PlayerCameraManager _playerCameraManager;
         #endregion
 
@@ -226,17 +238,24 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             if (_playerStates.dashing)
             {
-                
-
                 _playerStates.dashRefreshed = false;
                 _playerStates.dashConditionsMet = false;
 
                 _dashTrail.emitting = true;
                 _dashDir = CharacterRenderFacingRight ? Vector2.right : Vector2.left;
 
+                if (!IsGrounded)
+                {
+                    _rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                }
+
                 _rb.velocity = _dashDir * _baseStats._dashingVelocity;
 
-                _dashingCoroutine = StartCoroutine(StopDash_Coroutine());
+                _dashCancelCoroutine = StartCoroutine(StopDash_Coroutine());
+
+                // If the dash started on the ground, make sure the dash doesn't overshoot past a ledge
+                if (IsGrounded)
+                    _dashLedgeCancelCoroutine = StartCoroutine(StopDashLedge_Coroutine());
             }
         }
 
@@ -245,10 +264,17 @@ namespace WitchDoctor.GameResources.CharacterScripts
             yield return new WaitForSeconds(_baseStats._dashingTime);
             _playerStates.dashing = false;
             _dashTrail.emitting = false;
+            _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             yield return new WaitForSeconds(_baseStats._dashingRefreshTime);
             _playerStates.dashRefreshed = true;
 
-            _dashingCoroutine = null;
+            _dashCancelCoroutine = null;
+        }
+
+        private IEnumerator StopDashLedge_Coroutine()
+        {
+            yield return new WaitUntil(() => IsNextToLedge);
+            StopDashQuick();
         }
 
         private void StopDashQuick()
@@ -256,6 +282,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
             _playerStates.dashing = false;
             _dashTrail.emitting = false;
             _playerStates.dashRefreshed = true;
+            _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
             _rb.velocity = new Vector2(0, _rb.velocity.y);
         }
@@ -344,6 +371,32 @@ namespace WitchDoctor.GameResources.CharacterScripts
             LimitFallSpeed();
         }
 
+        private void OnDrawGizmos()
+        {
+            if (_debugGroundRaycast)
+            {
+                Vector3 centerPos = _groundTransform.position + (Vector3.down * _baseStats.GroundCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.GroundCheckX, _baseStats.GroundCheckY, 0f);
+                Gizmos.DrawLine(_groundTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_debugLedgeRaycast)
+            {
+                Vector3 centerPos = _ledgeTransform.position + (Vector3.down * _baseStats.LedgeCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY, 0f);
+                Gizmos.DrawLine(_ledgeTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_debugRoofRaycast)
+            {
+                Vector3 centerPos = _roofTransform.position + (Vector3.up * _baseStats.RoofCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
+                Gizmos.DrawLine(_roofTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+        }
         #endregion
     }
 }

@@ -28,6 +28,7 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         [Space(5)]
 
         [Header("Ground Checking")]
+        public float GroundCheckDist = 0.2f; // The distance of the origin point of the Raycast from the parent object
         public float GroundCheckY = 0.2f; //How far on the Y axis the groundcheck Raycast goes.
         public float GroundCheckX = 1f; //Same as above but for X.
         public LayerMask GroundLayer;
@@ -35,7 +36,15 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         [Space(5)]
 
         [Header("Roof Checking")]
+        public float RoofCheckDist = 0.2f;
         public float RoofCheckY = 0.2f;
         public float RoofCheckX = 1f;
+
+        [Space(5)]
+        [Header("Ledge Checking")]
+        public float LedgeCheckDist = 0.2f;
+        public float LedgeCheckY = 0.2f;
+        public float LedgeCheckX = 1f;
+
     }
 }

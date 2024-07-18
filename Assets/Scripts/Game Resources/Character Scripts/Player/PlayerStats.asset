@@ -20,10 +20,15 @@ MonoBehaviour:
   _dashingVelocity: 25
   _dashingTime: 0.5
   _dashingRefreshTime: 0.9
-  GroundCheckY: 0.2
-  GroundCheckX: 1
+  GroundCheckDist: 0.2
+  GroundCheckY: 0.31
+  GroundCheckX: 1.45
   GroundLayer:
     serializedVersion: 2
     m_Bits: 64
+  RoofCheckDist: 0.2
   RoofCheckY: 0.2
-  RoofCheckX: 1
+  RoofCheckX: 1.52
+  LedgeCheckDist: 0.6
+  LedgeCheckY: 1
+  LedgeCheckX: 0.2
