@@ -10,9 +10,9 @@ namespace WitchDoctor.GameResources.CharacterScripts
 {
     public class PlayerCameraManager : GameEntityManager<PlayerCameraManager, PlayerCameraManagerContext>
     {
-        [SerializeField] private Rigidbody2D _rb;
-        [SerializeField] private Transform _characterRenderTransform;
-        [SerializeField] private Transform _cameraFollowTransform;
+        private Rigidbody2D _rb;
+        private Transform _characterRenderTransform;
+        private Transform _cameraFollowTransform;
 
         private TweenerCore<Quaternion, Vector3, QuaternionOptions> _cameraFollowTween;
 
