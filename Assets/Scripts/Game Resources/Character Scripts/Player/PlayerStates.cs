@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WitchDoctor.GameResources.CharacterScripts
 {
-    public struct PlayerStates
+    public class PlayerStates
     {
         public bool walking;
         public bool jumping;

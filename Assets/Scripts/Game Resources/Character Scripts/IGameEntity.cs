@@ -173,6 +173,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             if (InitializationContext == null)
                 InitializationContext = default;
+
+            this.enabled = true;
         }
 
         public virtual void DeInitManager()

@@ -22,7 +22,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         [Header("Controls for lerping the Y Damping during player jump/fall")]
         [SerializeField] private float _fallPanAmount = 0.25f;
         [SerializeField] private float _fallYPanTime = 0.35f;
-        
+
         private float _initialYPanAmount;
         private Vector2 _initialTrackedObjectOffset;
 

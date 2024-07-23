@@ -390,6 +390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3140585437237668492}
   - component: {fileID: 3946219309575180389}
+  - component: {fileID: 8667559345838716257}
   - component: {fileID: 5856115649283023877}
   - component: {fileID: 31765690009589836}
   - component: {fileID: 925879790531993553}
@@ -433,12 +434,27 @@ MonoBehaviour:
   _cameraFollowTransform: {fileID: 4830769884952559958}
   _animator: {fileID: 4738049782596129069}
   _dashTrail: {fileID: 6937747074877218006}
+  _baseStats: {fileID: 11400000, guid: c1fbbd7bbf4497a418db979352f27be2, type: 2}
   _groundTransform: {fileID: 4318349613972365588}
   _ledgeTransform: {fileID: 1007714539808487015}
   _roofTransform: {fileID: 2462925902454184799}
-  _baseStats: {fileID: 11400000, guid: c1fbbd7bbf4497a418db979352f27be2, type: 2}
-  _flipRotationTime: 0.4
   _playerCameraManager: {fileID: 5856115649283023877}
+  _playerMovementManager: {fileID: 8667559345838716257}
+--- !u!114 &8667559345838716257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5898401633988569022}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12794fa62d8a0734f874d7edaa777dd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _debugGroundRaycast: 0
+  _debugLedgeRaycast: 0
+  _debugRoofRaycast: 0
 --- !u!114 &5856115649283023877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +462,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5898401633988569022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50e2907014179194a9e82c795399e86d, type: 3}
   m_Name: 
@@ -472,7 +488,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 10
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 2b0ff02b9a7fa1f418c080a9d3d5cfbd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

@@ -555,7 +555,7 @@ Transform:
   m_GameObject: {fileID: 276428913}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.116342, y: -11.519398, z: 6.336375}
+  m_LocalPosition: {x: -9.116342, y: -5.5193977, z: 6.336375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1597,7 +1597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 2, y: -6, z: 0}
+  m_TrackedObjectOffset: {x: 2, y: 0, z: 0}
   m_LookaheadTime: 0.05
   m_LookaheadSmoothing: 1
   m_LookaheadIgnoreY: 1
@@ -2311,18 +2311,6 @@ PrefabInstance:
     - target: {fileID: 3140585437237668492, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3946219309575180389, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
-      propertyPath: _debugRoofRaycast
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3946219309575180389, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
-      propertyPath: _debugLedgeRaycast
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3946219309575180389, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
-      propertyPath: _debugGroundRaycast
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5898401633988569022, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
       propertyPath: m_Name
@@ -16050,8 +16038,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1639963870807641989, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -10.180657
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639963870807641989, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.791866
+      value: -2.7918658
       objectReference: {fileID: 0}
     - target: {fileID: 5400095348090174598, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16098,9 +16090,17 @@ PrefabInstance:
       value: CameraManager
       objectReference: {fileID: 0}
     - target: {fileID: 7944082530327160328, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
+      propertyPath: _allVirtualCameras.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944082530327160328, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: _allVirtualCameras.Array.data[0]
       value: 
       objectReference: {fileID: 276428916}
+    - target: {fileID: 7944082530327160328, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
+      propertyPath: _allVirtualCameras.Array.data[1]
+      value: 
+      objectReference: {fileID: 432159827}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

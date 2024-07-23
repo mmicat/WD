@@ -27,9 +27,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
             _rb = InitializationContext.RB;
             _characterRenderTransform = InitializationContext.CharacterRenderTransform;
             _cameraFollowTransform = InitializationContext.CameraFollowTransform;
-            _flipRotationTime = InitializationContext.FlipRotationTime;
-
-            
         }
 
         public override void DeInitManager()
@@ -76,14 +73,12 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public Rigidbody2D RB { get; private set; }
         public Transform CharacterRenderTransform { get; private set; }
         public Transform CameraFollowTransform { get; private set; }
-        public float FlipRotationTime { get; private set; }
 
-        public PlayerCameraManagerContext(Rigidbody2D rb, Transform characterRenderTransform, Transform cameraFollowTransform, float flipRotationTime)
+        public PlayerCameraManagerContext(Rigidbody2D rb, Transform characterRenderTransform, Transform cameraFollowTransform)
         {
             RB = rb;
             CharacterRenderTransform = characterRenderTransform;
             CameraFollowTransform = cameraFollowTransform;
-            FlipRotationTime = flipRotationTime;
         }
     }
 }
