@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
 
-namespace WitchDoctor.GameResources.CharacterScripts
+namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 {
     public class PlayerMovementManager : GameEntityManager<PlayerMovementManager, PlayerMovementManagerContext>
     {
@@ -189,7 +189,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
                     _rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
                 }
 
-                _rb.velocity = _dashDir * _baseStats._dashingVelocity;
+                _rb.velocity = _dashDir * _baseStats.DashingVelocity;
 
                 _dashCancelCoroutine = StartCoroutine(StopDash_Coroutine());
 
@@ -201,11 +201,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
         private IEnumerator StopDash_Coroutine()
         {
-            yield return new WaitForSeconds(_baseStats._dashingTime);
+            yield return new WaitForSeconds(_baseStats.DashingTime);
             _playerStates.dashing = false;
             _dashTrail.emitting = false;
             _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-            yield return new WaitForSeconds(_baseStats._dashingRefreshTime);
+            yield return new WaitForSeconds(_baseStats.DashingRefreshTime);
             _playerStates.dashRefreshed = true;
 
             _dashCancelCoroutine = null;

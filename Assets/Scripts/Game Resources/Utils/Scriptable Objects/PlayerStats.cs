@@ -21,9 +21,9 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         [Space(5)]
 
         [Header("Dashing")]
-        public float _dashingVelocity = 14f;
-        public float _dashingTime = 0.5f;
-        public float _dashingRefreshTime = 0.8f;
+        public float DashingVelocity = 14f;
+        public float DashingTime = 0.5f;
+        public float DashingRefreshTime = 0.8f;
 
         [Space(5)]
 
@@ -46,5 +46,12 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public float LedgeCheckY = 0.2f;
         public float LedgeCheckX = 1f;
 
+        [Space(5)]
+        [Header("Combat")]
+        public LayerMask PlayerAttackableLayers;
+        [Tooltip("Time frame before receiving new input")] 
+        public float InputLag = 0.3f;
+        [Tooltip("Time it takes for primary attack to charge")]
+        public float PrimaryAttackChargeTime = 0.85f;
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace WitchDoctor.GameResources.CharacterScripts
 {
+    [System.Serializable]
     public class PlayerStates
     {
         public bool walking;
@@ -11,6 +12,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool dashing;
         public bool dashRefreshed;
         public bool dashConditionsMet;
+        public bool attacking;
         public bool interact;
         public bool interacting;
         public bool lookingRight;
@@ -23,6 +25,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool atNPC;
         public bool usingNPC;
 
+        #region State Properties
+        public bool IsIdle => !walking && !dashing && !jumping && !attacking;
+        public bool CanAttack => walking || dashing || IsIdle || attacking;
+        #endregion
+
         public void Reset()
         {
             walking = false;
@@ -30,6 +37,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
             dashing = false;
             dashRefreshed = true;
             dashConditionsMet = true;
+            attacking = false;
             interact = false;
             interacting = false;
             lookingRight = false;

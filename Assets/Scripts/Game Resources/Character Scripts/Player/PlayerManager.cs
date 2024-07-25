@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
 
-namespace WitchDoctor.GameResources.CharacterScripts
+namespace WitchDoctor.GameResources.CharacterScripts.Player
 {
     public class PlayerManager : PlayerEntity
     {
@@ -16,11 +17,17 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [SerializeField]
         private Transform _cameraFollowTransform;
         [SerializeField]
+        private PlayerStats _baseStats;
+        
+        [Space(5)]
+
+        [Header("Animations and Visual Effects")]
+        [SerializeField]
         private Animator _animator;
         [SerializeField]
-        private TrailRenderer _dashTrail;
+        private PlayerAnimationEvents _animationEvents;
         [SerializeField]
-        private PlayerStats _baseStats;
+        private TrailRenderer _dashTrail;
 
         [Space(5)]
         
@@ -41,6 +48,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [Header("Entity Managers")]
         [SerializeField] private PlayerCameraManager _playerCameraManager;
         [SerializeField] private PlayerMovementManager _playerMovementManager;
+        [SerializeField] private PlayerCombatManager _playerCombatManager;
         #endregion
 
         #region Overrides
@@ -51,14 +59,16 @@ namespace WitchDoctor.GameResources.CharacterScripts
                 _playerCameraManager.SetContext(
                     new PlayerCameraManagerContext(
                         _rb,
-                        _characterRenderTransform, 
+                        _characterRenderTransform,
                         _cameraFollowTransform)),
                 _playerMovementManager.SetContext(
                     new PlayerMovementManagerContext(
                         _characterRenderTransform, _cameraFollowTransform, _animator,
-                        _dashTrail, _baseStats, _groundTransform, _ledgeTransform, 
+                        _dashTrail, _baseStats, _groundTransform, _ledgeTransform,
                         _roofTransform, _rb, _playerStates, _playerCameraManager
-                        ))
+                        )),
+                _playerCombatManager.SetContext(
+                    new PlayerCombatManagerContext(_playerStates, _baseStats, _animator, _animationEvents))
             };
         }
 

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4830769884952559958}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Camera Follow
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 584239084812531331}
   - component: {fileID: 6937747074877218006}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Character Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1403169109424435748}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Platform Checks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1007714539808487015}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ledge Check
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -252,7 +252,8 @@ GameObject:
   - component: {fileID: 872684005428060351}
   - component: {fileID: 4738049782596129069}
   - component: {fileID: 3837222394903923433}
-  m_Layer: 0
+  - component: {fileID: 3503084867734044633}
+  m_Layer: 7
   m_Name: Character Animator
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -349,6 +350,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3503084867734044633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2542942487529416873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab88bd7032dfa14b89e4e6530845379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5415182235810008549
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,7 +371,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2462925902454184799}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Roof Check
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -392,9 +405,10 @@ GameObject:
   - component: {fileID: 3946219309575180389}
   - component: {fileID: 8667559345838716257}
   - component: {fileID: 5856115649283023877}
+  - component: {fileID: 6683998396644658912}
   - component: {fileID: 31765690009589836}
   - component: {fileID: 925879790531993553}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -432,14 +446,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterRenderTransform: {fileID: 872684005428060351}
   _cameraFollowTransform: {fileID: 4830769884952559958}
-  _animator: {fileID: 4738049782596129069}
-  _dashTrail: {fileID: 6937747074877218006}
   _baseStats: {fileID: 11400000, guid: c1fbbd7bbf4497a418db979352f27be2, type: 2}
+  _animator: {fileID: 4738049782596129069}
+  _animationEvents: {fileID: 3503084867734044633}
+  _dashTrail: {fileID: 6937747074877218006}
   _groundTransform: {fileID: 4318349613972365588}
   _ledgeTransform: {fileID: 1007714539808487015}
   _roofTransform: {fileID: 2462925902454184799}
   _playerCameraManager: {fileID: 5856115649283023877}
   _playerMovementManager: {fileID: 8667559345838716257}
+  _playerCombatManager: {fileID: 6683998396644658912}
 --- !u!114 &8667559345838716257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,11 +483,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e2907014179194a9e82c795399e86d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 0}
-  _characterRenderTransform: {fileID: 0}
-  _cameraFollowTransform: {fileID: 0}
   _flipRotationTime: 0.4
   _fallSpeedChangeThreshold: -15
+--- !u!114 &6683998396644658912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5898401633988569022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f16cf5efc164454a8f881005fda4540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &31765690009589836
 Rigidbody2D:
   serializedVersion: 4
@@ -543,7 +568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4318349613972365588}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground Check
   m_TagString: Player
   m_Icon: {fileID: 0}

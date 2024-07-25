@@ -17,9 +17,9 @@ MonoBehaviour:
   FallSpeed: 45
   JumpSteps: 20
   JumpThreshold: 7
-  _dashingVelocity: 25
-  _dashingTime: 0.5
-  _dashingRefreshTime: 0.9
+  DashingVelocity: 14
+  DashingTime: 0.5
+  DashingRefreshTime: 0.8
   GroundCheckDist: 0.2
   GroundCheckY: 0.31
   GroundCheckX: 1.45
@@ -32,3 +32,8 @@ MonoBehaviour:
   LedgeCheckDist: 0.6
   LedgeCheckY: 1
   LedgeCheckX: 0.2
+  PlayerAttackableLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  InputLag: 0.11
+  PrimaryAttackChargeTime: 0.85

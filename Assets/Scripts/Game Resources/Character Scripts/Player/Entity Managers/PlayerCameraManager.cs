@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using WitchDoctor.CoreResources.Managers.CameraManagement;
 
-namespace WitchDoctor.GameResources.CharacterScripts
+namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 {
     public class PlayerCameraManager : GameEntityManager<PlayerCameraManager, PlayerCameraManagerContext>
     {

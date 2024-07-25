@@ -72,7 +72,7 @@ namespace WitchDoctor.Managers.InputManagement
                     ""id"": ""cece3327-a08f-4fd6-8606-46ec4b0ed36f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold(duration=0.9)"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WitchDoctor.CoreResources.Utils.Singleton;
-using WitchDoctor.GameResources.CharacterScripts;
+using WitchDoctor.GameResources.CharacterScripts.Player;
 
 namespace WitchDoctor.GameResources
 {
