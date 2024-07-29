@@ -13,7 +13,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private Transform _cameraFollowTransform;
         private Animator _animator;
         private TrailRenderer _dashTrail;
-        private PlayerStats _baseStats;
 
         [Space(5)]
 
@@ -42,12 +41,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private Coroutine _dashCancelCoroutine;
         private Coroutine _dashLedgeCancelCoroutine;
 
+        #region Serialized Fields
+        [SerializeField] private PlayerStats _baseStats;
+
+#if UNITY_EDITOR
+        [Space(5)]
+        [Header("Debug Options")]
+        [SerializeField] private bool _groundRaycastDims;
+        [SerializeField] private bool _ledgeRaycastDims, _roofRaycastDims;
+#endif
+        #endregion
 
         #region Platform Checks
-        // Debug Properties
-        [SerializeField]
-        private bool _debugGroundRaycast, _debugLedgeRaycast, _debugRoofRaycast;
-
         private bool IsGrounded => Physics2D.BoxCast(_groundTransform.position, new Vector2(_baseStats.GroundCheckX, _baseStats.GroundCheckY),
             0f, Vector2.down, _baseStats.GroundCheckDist, _baseStats.GroundLayer);
 
@@ -102,9 +107,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             yield return new WaitUntil(() => InputManager.IsInstantiated);
 
-            InputManager.InputActions.Player.Movement.performed += MovementPerformed;
-            InputManager.InputActions.Player.Jump.performed += Jump_performed;
-            InputManager.InputActions.Player.Dash.performed += Dash_performed;
+            InputManager.Player.Movement.performed += MovementPerformed;
+            InputManager.Player.Jump.performed += Jump_performed;
+            InputManager.Player.Dash.performed += Dash_performed;
 
             _inputWaitingCoroutine = null;
         }
@@ -112,9 +117,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private void RemoveListeners()
         {
             if (!InputManager.IsInstantiated) return;
-            InputManager.InputActions.Player.Movement.performed -= MovementPerformed;
-            InputManager.InputActions.Player.Jump.performed -= Jump_performed;
-            InputManager.InputActions.Player.Dash.performed -= Dash_performed;
+            InputManager.Player.Movement.performed -= MovementPerformed;
+            InputManager.Player.Jump.performed -= Jump_performed;
+            InputManager.Player.Dash.performed -= Dash_performed;
         }
 
         #region Movement Scripts
@@ -252,7 +257,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _animator.SetBool("Dash", _playerStates.dashing);
             _animator.SetFloat("YVelocity", _rb.velocity.y);
 
-            if (InputManager.InputActions.Player.Jump.WasReleasedThisFrame())
+            if (InputManager.Player.Jump.WasReleasedThisFrame())
             {
                 if (stepsJumped < _baseStats.JumpSteps
                     && stepsJumped > _baseStats.JumpThreshold
@@ -350,9 +355,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             LimitFallSpeed();
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (_debugGroundRaycast)
+            if (_groundRaycastDims)
             {
                 Vector3 centerPos = _groundTransform.position + (Vector3.down * _baseStats.GroundCheckDist);
                 Vector3 cubeSize = new Vector3(_baseStats.GroundCheckX, _baseStats.GroundCheckY, 0f);
@@ -360,7 +366,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 Gizmos.DrawWireCube(centerPos, cubeSize);
             }
 
-            if (_debugLedgeRaycast)
+            if (_ledgeRaycastDims)
             {
                 Vector3 centerPos = _ledgeTransform.position + (Vector3.down * _baseStats.LedgeCheckDist);
                 Vector3 cubeSize = new Vector3(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY, 0f);
@@ -368,7 +374,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 Gizmos.DrawWireCube(centerPos, cubeSize);
             }
 
-            if (_debugRoofRaycast)
+            if (_roofRaycastDims)
             {
                 Vector3 centerPos = _roofTransform.position + (Vector3.up * _baseStats.RoofCheckDist);
                 Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
@@ -376,6 +382,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 Gizmos.DrawWireCube(centerPos, cubeSize);
             }
         }
+#endif
         #endregion
     }
 

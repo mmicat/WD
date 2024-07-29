@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using WitchDoctor.GameResources.CharacterScripts.Player.AnimationEvents;
 using WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
-using WitchDoctor.Managers.InputManagement;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Player
 {
@@ -25,7 +24,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         [SerializeField]
         private Animator _animator;
         [SerializeField]
-        private PlayerAnimationEvents _animationEvents;
+        private PlayerAnimationEvents _playerAnimationEvents;
+        [SerializeField]
+        private ChargeFXAnimationEvents _chargeFXAnimationEvents;
         [SerializeField]
         private TrailRenderer _dashTrail;
 
@@ -68,7 +69,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
                         _roofTransform, _rb, _playerStates, _playerCameraManager
                         )),
                 _playerCombatManager.SetContext(
-                    new PlayerCombatManagerContext(_playerStates, _baseStats, _animator, _animationEvents))
+                    new PlayerCombatManagerContext(
+                        _playerStates, _baseStats, _animator, _playerAnimationEvents, 
+                        _chargeFXAnimationEvents))
             };
         }
 

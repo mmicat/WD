@@ -31,6 +31,9 @@ namespace WitchDoctor.Managers.InputManagement
 
         public static Action onControlSchemeChange;
         public static BaseInputActions InputActions { get; private set; }
+        public static BaseInputActions.PlayerActions Player => InputActions.Player;
+        public static BaseInputActions.UIActions UI => InputActions.UI;
+
         public ControllerLayout CurrentControlScheme
         {
             get

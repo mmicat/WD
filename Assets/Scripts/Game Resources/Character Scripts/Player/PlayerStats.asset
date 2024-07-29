@@ -35,5 +35,13 @@ MonoBehaviour:
   PlayerAttackableLayers:
     serializedVersion: 2
     m_Bits: 256
-  InputLag: 0.11
+  AttackResetDuration: 0.3
   PrimaryAttackChargeTime: 0.85
+  Attack1HitboxRadius: 2.75
+  Attack2HitboxRadius: 2.44
+  Attack3HitboxRadius: 3.21
+  ChargedAttackHitboxRadius: 3.21
+  Attack1Offset: {x: 0.52, y: 1.2}
+  Attack2Offset: {x: 0.79, y: 0.98}
+  Attack3Offset: {x: 0.75, y: 1.03}
+  ChargedAttackOffset: {x: 0.75, y: 1.03}

@@ -86,14 +86,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.071428575
-    functionName: ApplyHitBox
+    functionName: ApplyPrimaryAttackHitBox
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 2
     messageOptions: 0
   - time: 0.2857143
-    functionName: AttackComplete
+    functionName: PrimaryAttackComplete
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

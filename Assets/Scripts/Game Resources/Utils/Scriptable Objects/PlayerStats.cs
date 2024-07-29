@@ -49,9 +49,17 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         [Space(5)]
         [Header("Combat")]
         public LayerMask PlayerAttackableLayers;
-        [Tooltip("Time frame before receiving new input")] 
-        public float InputLag = 0.3f;
+        [Tooltip("Time frame after which the attack chain is reset")] 
+        public float AttackResetDuration = 0.3f;
         [Tooltip("Time it takes for primary attack to charge")]
         public float PrimaryAttackChargeTime = 0.85f;
+        public float Attack1HitboxRadius = 1f;
+        public float Attack2HitboxRadius = 1f;
+        public float Attack3HitboxRadius = 1f;
+        public float ChargedAttackHitboxRadius = 1f;
+        public Vector2 Attack1Offset = Vector2.zero;
+        public Vector2 Attack2Offset = Vector2.zero;
+        public Vector2 Attack3Offset = Vector2.zero;
+        public Vector2 ChargedAttackOffset = Vector2.zero;
     }
 }
