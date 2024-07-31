@@ -23,18 +23,21 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private PlayerStates _playerStates;
         private Animator _animator;
+        private Animator _chargeFXAnimator;
         private PlayerAnimationEvents _animationEvents;
         private ChargeFXAnimationEvents _chargeFXAnimationEvents;
 
         private Coroutine _inputWaitingCoroutine;
         private Coroutine _attackChainCoroutine;
 
+        private float _primaryAttackInputTime;
         private float _chargeInitTime;
         private float _currChargeTime;
 
         private bool _primaryAttackInputStarted;
         private bool _primaryAttackChargeStarted;
         private bool _primaryAttackCharged;
+
         #endregion
 
         #region Serialized Properties
@@ -61,6 +64,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _playerStates = InitializationContext.PlayerStates;
             _baseStats = InitializationContext.BaseStats;
             _animator = InitializationContext.Animator;
+            _chargeFXAnimator = InitializationContext.ChargeFXAnimator;
             _animationEvents = InitializationContext.PlayerAnimationEvents;
             _chargeFXAnimationEvents = InitializationContext.ChargeFXAnimationEvents;
 
@@ -93,6 +97,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _animationEvents.OnApplyPrimaryAttackHitbox += OnApplyHitBox_Event;
             _animationEvents.OnPrimaryAttackComplete += OnAttackComplete_Event;
 
+            _animationEvents.OnChargeAnimationComplete_Character += OnCharacterChargeComplete;
+            _chargeFXAnimationEvents.OnChargeComplete += OnChargeFXComplete;
+
             _inputWaitingCoroutine = null;
         }
 
@@ -107,6 +114,30 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             InputManager.Player.SecondaryAttack.performed -= SecondaryAttack_performed;
         }
 
+        private void SetCurrentAttack(PrimaryAttackType value, bool updateAnimation = true)
+        {
+            if (updateAnimation && _currAttack != value)
+            {
+                _animator.SetInteger("Attack", (int)value);
+            }
+
+            _currAttack = value;
+        }
+
+        private void SetCharging(bool updateAnimation = true)
+        {
+            var value = _primaryAttackChargeStarted ^ _primaryAttackCharged;
+
+            if (updateAnimation && _playerStates.chargingAttack != value)
+            {
+                _animator.SetBool("ChargingAttack", value);
+
+                if (!value) _chargeFXAnimator.gameObject.SetActive(false);
+            }
+
+            _playerStates.chargingAttack = value;
+        }
+
         #region Combat Scripts
         private void UpdateCombatStates()
         {
@@ -117,12 +148,15 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 else if (_primaryAttackChargeStarted && !_primaryAttackCharged)
                     ChargeAttack();
                 else if (InputManager.Player.PrimaryAttack.phase == (InputActionPhase.Started | InputActionPhase.Waiting | InputActionPhase.Performed) &&
-                    !_primaryAttackInputStarted && !_primaryAttackCharged && !_primaryAttackChargeStarted)
+                    !_primaryAttackInputStarted && !_primaryAttackCharged && !_primaryAttackChargeStarted && 
+                    (Time.time - _primaryAttackInputTime) > _baseStats.PrimaryAttackChargeDelay)
                 {
                     // Debug.Log("Charge Start");
                     _primaryAttackChargeStarted = true;
                     _chargeInitTime = Time.time;
                     _currChargeTime = 0f;
+
+                    SetCharging();
                 }
             }
         }
@@ -141,32 +175,48 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             if (_primaryAttackCharged)
             {
                 // Debug.Log("Using Charged Attack");
-                _currAttack = PrimaryAttackType.ChargedAttack;
+                SetCurrentAttack(PrimaryAttackType.ChargedAttack);
                 _primaryAttackCharged = false;
+
+                SetCharging();
             }
             else
             {
-                _currAttack = _currAttack == (PrimaryAttackType)3 ? (PrimaryAttackType)1 : _currAttack + 1;
+                SetCurrentAttack((_currAttack == (PrimaryAttackType)3 ? (PrimaryAttackType)1 : _currAttack + 1));
                 // Debug.Log($"Standard Attack: {_currAttack}");
             }
 
-            _animator.SetInteger("Attack", (int)_currAttack);
+            // _animator.SetInteger("Attack", (int)_currAttack);
             _primaryAttackInputStarted = false;
         }
 
         private void ChargeAttack()
         {
-            if (_currChargeTime >= _baseStats.PrimaryAttackChargeTime)
-            {
-                // Debug.Log("Charge Complete");
-                _primaryAttackChargeStarted = false;
-                _primaryAttackCharged = true;
-            }
-            else
-            {
+            //if (_currChargeTime >= _baseStats.PrimaryAttackChargeTime)
+            //{
+            //    // Debug.Log("Charge Complete");
+            //    _primaryAttackChargeStarted = false;
+            //    _primaryAttackCharged = true;
+            //}
+            //else
+            //{
                 // Debug.Log("Charging Attack");
                 _currChargeTime = Time.time - _chargeInitTime;
-            }
+            //}
+
+            // _animator.SetBool("ChargingAttack", _primaryAttackChargeStarted);
+            SetCharging();
+            
+        }
+
+        private IEnumerator AttackChain_Coroutine()
+        {
+            yield return new WaitForSeconds(_baseStats.AttackResetDuration);
+            // Debug.Log("Attack Chain Stop Time Reached. Resetting Combo Chain");
+            SetCurrentAttack(PrimaryAttackType.None);
+            // _animator.SetInteger("Attack", (int)_currAttack);
+
+            _attackChainCoroutine = null;
         }
         #endregion
         #endregion
@@ -179,6 +229,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 // Debug.Log("Primary Attack Started");
                 _primaryAttackInputStarted = false;
                 _primaryAttackCharged = false;
+                _primaryAttackInputTime = Time.time;
+
+                SetCharging(false);
             }
         }
 
@@ -189,6 +242,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 // Debug.Log("Attack Cancelled");
                 _primaryAttackInputStarted = true;
                 _primaryAttackChargeStarted = false;
+
+                SetCharging();
             }
         }
 
@@ -235,17 +290,25 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _playerStates.attacking = false;
             _primaryAttackCharged = false;
 
+            SetCharging();
+
             _attackChainCoroutine = StartCoroutine(AttackChain_Coroutine());
         }
 
-        private IEnumerator AttackChain_Coroutine()
+        private void OnCharacterChargeComplete()
         {
-            yield return new WaitForSeconds(_baseStats.AttackResetDuration);
-            // Debug.Log("Attack Chain Stop Time Reached. Resetting Combo Chain");
-            _currAttack = PrimaryAttackType.None;
-            _animator.SetInteger("Attack", (int)_currAttack);
+            // This is just the current implementation since
+            // we only have one animation might change later
+            _chargeFXAnimator.gameObject.SetActive(true);
+        }
 
-            _attackChainCoroutine = null;
+        private void OnChargeFXComplete()
+        {
+            // Debug.Log("Charge Complete");
+            _primaryAttackChargeStarted = false;
+            _primaryAttackCharged = true;
+
+            _chargeFXAnimator.gameObject.SetActive(false);
         }
         #endregion
 
@@ -284,14 +347,16 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         public PlayerStates PlayerStates;
         public PlayerStats BaseStats;
         public Animator Animator;
+        public Animator ChargeFXAnimator;
         public PlayerAnimationEvents PlayerAnimationEvents;
         public ChargeFXAnimationEvents ChargeFXAnimationEvents;
 
-        public PlayerCombatManagerContext(PlayerStates playerStates, PlayerStats baseStats, Animator animator, PlayerAnimationEvents playerAnimationEvents, ChargeFXAnimationEvents chargeFXAnimationEvents)
+        public PlayerCombatManagerContext(PlayerStates playerStates, PlayerStats baseStats, Animator animator, Animator chargeFXAnimator, PlayerAnimationEvents playerAnimationEvents, ChargeFXAnimationEvents chargeFXAnimationEvents)
         {
             PlayerStates = playerStates;
             BaseStats = baseStats;
             Animator = animator;
+            ChargeFXAnimator = chargeFXAnimator;
             PlayerAnimationEvents = playerAnimationEvents;
             ChargeFXAnimationEvents = chargeFXAnimationEvents;
         }

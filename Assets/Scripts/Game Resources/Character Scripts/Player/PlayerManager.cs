@@ -24,6 +24,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         [SerializeField]
         private Animator _animator;
         [SerializeField]
+        private Animator _playerFXAnimator;
+        [SerializeField]
         private PlayerAnimationEvents _playerAnimationEvents;
         [SerializeField]
         private ChargeFXAnimationEvents _chargeFXAnimationEvents;
@@ -70,8 +72,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
                         )),
                 _playerCombatManager.SetContext(
                     new PlayerCombatManagerContext(
-                        _playerStates, _baseStats, _animator, _playerAnimationEvents, 
-                        _chargeFXAnimationEvents))
+                        _playerStates, _baseStats, _animator, _playerFXAnimator, 
+                        _playerAnimationEvents, _chargeFXAnimationEvents))
             };
         }
 

@@ -51,6 +51,8 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public LayerMask PlayerAttackableLayers;
         [Tooltip("Time frame after which the attack chain is reset")] 
         public float AttackResetDuration = 0.3f;
+        [Tooltip("A delay period after which the charge begins. Used to ensure that the charge does not begin for tapping interactions")]
+        public float PrimaryAttackChargeDelay = 0.1f;
         [Tooltip("Time it takes for primary attack to charge")]
         public float PrimaryAttackChargeTime = 0.85f;
         public float Attack1HitboxRadius = 1f;

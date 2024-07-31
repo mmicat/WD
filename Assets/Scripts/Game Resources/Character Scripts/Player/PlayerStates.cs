@@ -13,6 +13,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool dashRefreshed;
         public bool dashConditionsMet;
         public bool attacking;
+        public bool chargingAttack;
         public bool interact;
         public bool interacting;
         public bool lookingRight;
@@ -26,7 +27,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool usingNPC;
 
         #region State Properties
-        public bool IsIdle => !walking && !dashing && !jumping && !attacking;
+        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack;
         public bool CanAttack => walking || dashing || IsIdle || attacking;
         #endregion
 
@@ -38,6 +39,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
             dashRefreshed = true;
             dashConditionsMet = true;
             attacking = false;
+            chargingAttack = false;
             interact = false;
             interacting = false;
             lookingRight = false;

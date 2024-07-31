@@ -6,8 +6,14 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.AnimationEvents
 {
     public class PlayerAnimationEvents : MonoBehaviour
     {
+        public Action OnChargeAnimationComplete_Character;
         public Action OnPrimaryAttackComplete;
         public Action<PrimaryAttackType> OnApplyPrimaryAttackHitbox;
+
+        public void ChargeComplete()
+        {
+            OnChargeAnimationComplete_Character?.Invoke();
+        }
 
         public void PrimaryAttackComplete()
         {
