@@ -53,12 +53,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #endregion
 
         #region Platform Checks
-        private bool IsGrounded => Physics2D.BoxCast(_groundTransform.position, new Vector2(_baseStats.GroundCheckX, _baseStats.GroundCheckY),
+        public bool IsGrounded => Physics2D.BoxCast(_groundTransform.position, new Vector2(_baseStats.GroundCheckX, _baseStats.GroundCheckY),
             0f, Vector2.down, _baseStats.GroundCheckDist, _baseStats.GroundLayer);
 
-        private bool IsNextToLedge => !Physics2D.BoxCast(_ledgeTransform.position, new Vector2(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY),
+        public bool IsNextToLedge => !Physics2D.BoxCast(_ledgeTransform.position, new Vector2(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY),
             0f, Vector2.down, _baseStats.LedgeCheckDist, _baseStats.GroundLayer);
-        private bool IsRoofed => Physics2D.BoxCast(_roofTransform.position, new Vector2(_baseStats.RoofCheckX, _baseStats.RoofCheckY),
+        public bool IsRoofed => Physics2D.BoxCast(_roofTransform.position, new Vector2(_baseStats.RoofCheckX, _baseStats.RoofCheckY),
             0f, Vector2.up, _baseStats.RoofCheckDist, _baseStats.GroundLayer);
         #endregion
 
@@ -136,6 +136,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _playerStates.walking = Mathf.Abs(_rb.velocity.x) > 0f;
 
             _animator.SetBool("Walking", _playerStates.walking);
+        }
+
+        private void StopWalk()
+        {
+            movement = Vector2.zero;
         }
 
         /// <summary>
@@ -302,10 +307,21 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #endregion
         #endregion
 
+        #region Public Methods
+        public void InterruptMovement(bool interruptJump = false)
+        {
+            if (interruptJump)
+                StopJumpQuick();
+
+            StopDashQuick();
+            StopWalk();
+        }
+        #endregion
+
         #region Event Listeners
         private void MovementPerformed(InputAction.CallbackContext obj)
         {
-            if (obj.performed)
+            if (obj.performed && _playerStates.CanMove)
             {
                 movement.x = obj.ReadValue<Vector2>().x;
                 movement.y = obj.ReadValue<Vector2>().y;
@@ -314,7 +330,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void Jump_performed(InputAction.CallbackContext obj)
         {
-            if (obj.performed && IsGrounded)
+            if (obj.performed && IsGrounded && _playerStates.CanMove)
             {
                 if (_playerStates.dashing)
                 {
@@ -328,7 +344,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void Dash_performed(InputAction.CallbackContext obj)
         {
-            if (obj.performed && _playerStates.dashConditionsMet)
+            if (obj.performed && _playerStates.dashConditionsMet && _playerStates.CanMove)
             {
                 if (_playerStates.jumping)
                 {

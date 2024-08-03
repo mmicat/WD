@@ -26,6 +26,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private Animator _chargeFXAnimator;
         private PlayerAnimationEvents _animationEvents;
         private ChargeFXAnimationEvents _chargeFXAnimationEvents;
+        private PlayerMovementManager _playerMovementManager;
 
         private Coroutine _inputWaitingCoroutine;
         private Coroutine _attackChainCoroutine;
@@ -67,6 +68,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _chargeFXAnimator = InitializationContext.ChargeFXAnimator;
             _animationEvents = InitializationContext.PlayerAnimationEvents;
             _chargeFXAnimationEvents = InitializationContext.ChargeFXAnimationEvents;
+            _playerMovementManager = InitializationContext.PlayerMovementManager;
 
             _inputWaitingCoroutine = StartCoroutine(AddListeners());
         }
@@ -147,7 +149,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                     PrimaryAttack();
                 else if (_primaryAttackChargeStarted && !_primaryAttackCharged)
                     ChargeAttack();
-                else if (InputManager.Player.PrimaryAttack.phase == (InputActionPhase.Started | InputActionPhase.Waiting | InputActionPhase.Performed) &&
+                else if (_playerMovementManager.IsGrounded && InputManager.Player.PrimaryAttack.phase == (InputActionPhase.Started | InputActionPhase.Waiting | InputActionPhase.Performed) &&
                     !_primaryAttackInputStarted && !_primaryAttackCharged && !_primaryAttackChargeStarted && 
                     (Time.time - _primaryAttackInputTime) > _baseStats.PrimaryAttackChargeDelay)
                 {
@@ -224,8 +226,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Event Listeners
         private void PrimaryAttack_started(InputAction.CallbackContext obj)
         {
-            if (obj.started && _playerStates.CanAttack)
+            if (obj.started && _playerStates.CanAttack && _playerMovementManager.IsGrounded) // We'll change the is grounded flag later if required
             {
+                _playerMovementManager.InterruptMovement();
+
                 // Debug.Log("Primary Attack Started");
                 _primaryAttackInputStarted = false;
                 _primaryAttackCharged = false;
@@ -237,7 +241,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void PrimaryAttack_canceled(InputAction.CallbackContext obj)
         {
-            if (obj.canceled && !_primaryAttackInputStarted)
+            if (obj.canceled && !_primaryAttackInputStarted && _playerMovementManager.IsGrounded)
             {
                 // Debug.Log("Attack Cancelled");
                 _primaryAttackInputStarted = true;
@@ -350,8 +354,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         public Animator ChargeFXAnimator;
         public PlayerAnimationEvents PlayerAnimationEvents;
         public ChargeFXAnimationEvents ChargeFXAnimationEvents;
+        public PlayerMovementManager PlayerMovementManager;
 
-        public PlayerCombatManagerContext(PlayerStates playerStates, PlayerStats baseStats, Animator animator, Animator chargeFXAnimator, PlayerAnimationEvents playerAnimationEvents, ChargeFXAnimationEvents chargeFXAnimationEvents)
+        public PlayerCombatManagerContext(PlayerStates playerStates, PlayerStats baseStats, 
+            Animator animator, Animator chargeFXAnimator, PlayerAnimationEvents playerAnimationEvents, 
+            ChargeFXAnimationEvents chargeFXAnimationEvents, PlayerMovementManager playerMovementManager)
         {
             PlayerStates = playerStates;
             BaseStats = baseStats;
@@ -359,6 +366,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             ChargeFXAnimator = chargeFXAnimator;
             PlayerAnimationEvents = playerAnimationEvents;
             ChargeFXAnimationEvents = chargeFXAnimationEvents;
+            PlayerMovementManager = playerMovementManager;
         }
     }
 }

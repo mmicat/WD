@@ -28,7 +28,9 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
         #region State Properties
         public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack;
-        public bool CanAttack => walking || dashing || IsIdle || attacking;
+        public bool CanAttack => !jumping && (walking || dashing || IsIdle || attacking);
+        public bool IsMoving => walking || dashing || jumping;
+        public bool CanMove => !attacking && (IsMoving || IsIdle);
         #endregion
 
         public void Reset()

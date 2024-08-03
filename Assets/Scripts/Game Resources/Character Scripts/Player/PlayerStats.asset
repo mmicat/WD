@@ -36,6 +36,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   AttackResetDuration: 0.1
+  PrimaryAttackChargeDelay: 0.15
   PrimaryAttackChargeTime: 0.85
   Attack1HitboxRadius: 2.75
   Attack2HitboxRadius: 2.44

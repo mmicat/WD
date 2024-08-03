@@ -73,7 +73,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
                 _playerCombatManager.SetContext(
                     new PlayerCombatManagerContext(
                         _playerStates, _baseStats, _animator, _playerFXAnimator, 
-                        _playerAnimationEvents, _chargeFXAnimationEvents))
+                        _playerAnimationEvents, _chargeFXAnimationEvents, 
+                        _playerMovementManager))
             };
         }
 
