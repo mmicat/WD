@@ -131,6 +131,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         /// </param>
         private void Walk(float MoveDirection)
         {
+            if (!_playerStates.CanMove)
+            {
+                StopWalk();
+                return;
+            }
+
             _rb.velocity = new Vector2(MoveDirection * _baseStats.WalkSpeed, _rb.velocity.y);
 
             _playerStates.walking = Mathf.Abs(_rb.velocity.x) > 0f;
@@ -140,7 +146,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void StopWalk()
         {
-            movement = Vector2.zero;
+            _rb.velocity = Vector2.zero;
+            _playerStates.walking = false;
+            _animator.SetBool("Walking", false);
         }
 
         /// <summary>
@@ -314,14 +322,14 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 StopJumpQuick();
 
             StopDashQuick();
-            StopWalk();
+            // StopWalk();
         }
         #endregion
 
         #region Event Listeners
         private void MovementPerformed(InputAction.CallbackContext obj)
         {
-            if (obj.performed && _playerStates.CanMove)
+            if (obj.performed)
             {
                 movement.x = obj.ReadValue<Vector2>().x;
                 movement.y = obj.ReadValue<Vector2>().y;
