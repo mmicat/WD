@@ -69,7 +69,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private Coroutine _inputWaitingCoroutine;
 
-        private bool _cameraFollowFacingRight = true;
+        // private bool _cameraFollowFacingRight = true;
+
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
         #region Overrides
@@ -332,10 +333,15 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void ProcessRecoil()
         {
-            if (!_playerStates.IsRecoiling && animateRecoil)
+            if (!_playerStates.IsRecoiling)
             {
-                _damageDir = Vector2.zero;
-                animateRecoil = false;
+                if (animateRecoil)
+                {
+                    _damageDir = Vector2.zero;
+                    animateRecoil = false;
+                }
+
+                return;
             }
 
             if (_playerStates.recoilingX == true && stepsXRecoiled < _baseStats.recoilXSteps)
@@ -381,9 +387,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private void LimitFallSpeed()
         {
 
-            if (_rb.velocity.y < -Mathf.Abs(_baseStats.FallSpeed))
+            if (_rb.velocity.y < -Mathf.Abs(_baseStats.MaxFallSpeed))
             {
-                _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Clamp(_rb.velocity.y, -Mathf.Abs(_baseStats.FallSpeed), Mathf.Infinity));
+                _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Clamp(_rb.velocity.y, -Mathf.Abs(_baseStats.MaxFallSpeed), Mathf.Infinity));
             }
         }
 
@@ -395,7 +401,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             _animator.SetBool("Grounded", IsGrounded);
             _animator.SetBool("Dash", _playerStates.dashing);
-            _animator.SetBool("Recoiling", _playerStates.IsRecoiling);
+            _animator.SetBool("Recoiling", _playerStates.IsRecoiling && animateRecoil);
             _animator.SetFloat("YVelocity", _rb.velocity.y);
 
             if (InputManager.Player.Jump.WasReleasedThisFrame())
@@ -430,6 +436,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 StopWalk();
 
             StopDashQuick();
+        }
+
+        public void ProcessEnemyCollision(Collision2D collision)
+        {
+            _damageDir = Vector3.Normalize(collision.transform.position - transform.position);
+            SetRecoil();
         }
         #endregion
 
@@ -485,16 +497,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             Dash();
             ProcessRecoil();
             LimitFallSpeed();
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
-            {
-                _damageDir = Vector3.Normalize(collision.transform.position - transform.position);
-                SetRecoil();
-            }
-            
         }
 
 #if UNITY_EDITOR

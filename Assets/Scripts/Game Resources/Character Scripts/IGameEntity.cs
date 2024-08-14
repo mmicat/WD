@@ -105,17 +105,30 @@ namespace WitchDoctor.GameResources.CharacterScripts
         protected virtual void OnDamageTaken(int damage)
         {
             _currHealth = Mathf.Clamp(_currHealth - damage, 0, _maxHealth);
+
+            if (_currHealth <= 0) OnDeath();
         }
+
+        protected abstract void OnDeath();
         #endregion
     }
 
     public abstract class PlayerEntity : GameEntity
     {
+        protected int _primaryAttackDamage;
+        protected int _secondaryAttackDamage;
+        protected float _chargedAttackFactor;
+
+        public int PrimaryAttackDamage => _primaryAttackDamage;
+        public int ChargedAttackDamage => (int) (_primaryAttackDamage * _chargedAttackFactor);
+        public int SecondaryAttackDamage => _secondaryAttackDamage;
+
         protected override void InitCharacter()
         {
             base.InitCharacter();
             
             _isPlayer = true;
+            _currHealth = _maxHealth; // set max health in override
             _contactDamage = 0;
         }
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WalkSpeed: 15
   JumpSpeed: 45
-  FallSpeed: 45
+  MaxFallSpeed: 45
   JumpSteps: 20
   JumpThreshold: 7
   DashingVelocity: 14
@@ -49,9 +49,9 @@ MonoBehaviour:
   PlayerDamagableLayers:
     serializedVersion: 2
     m_Bits: 256
-  recoilXSteps: 15
+  recoilSpeedDecayConstant: 1
+  recoilXSteps: 8
   recoilYSteps: 10
   recoilXSpeed: 38
   recoilYSpeed: 45
   recoilGravityScale: 10
-  recoilSpeedDecayConstant: 1.2

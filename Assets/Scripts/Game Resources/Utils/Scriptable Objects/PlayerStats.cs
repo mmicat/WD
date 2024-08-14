@@ -7,6 +7,12 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
     [CreateAssetMenu(fileName = "Player Stats", menuName = "Scriptable Objects/Player Stats", order = 2)]
     public class PlayerStats : ScriptableObject
     {
+        [Header("Base Stats")]
+        public int BaseHealth = 100;
+        public int BaseAttack = 15;
+
+        [Space(5)]
+
         [Header("X Axis Movement")]
         public float WalkSpeed = 25f;
 
@@ -14,7 +20,7 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
 
         [Header("Y Axis Movement")]
         public float JumpSpeed = 45f;
-        public float FallSpeed = 45f;
+        public float MaxFallSpeed = 45f;
         public int JumpSteps = 20;
         public int JumpThreshold = 7;
 
@@ -41,14 +47,19 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public float RoofCheckX = 1f;
 
         [Space(5)]
+
         [Header("Ledge Checking")]
         public float LedgeCheckDist = 0.2f;
         public float LedgeCheckY = 0.2f;
         public float LedgeCheckX = 1f;
 
         [Space(5)]
+
         [Header("Combat - Attacking")]
         public LayerMask PlayerAttackableLayers;
+        public int BasePrimaryAttackDamage = 15;
+        public int BaseSecondaryAttackDamage = 30;
+        public float BaseChargedAttackFactor = 1.5f;
         [Tooltip("Time frame after which the attack chain is reset")] 
         public float AttackResetDuration = 0.3f;
         [Tooltip("A delay period after which the charge begins. Used to ensure that the charge does not begin for tapping interactions")]
@@ -65,13 +76,14 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public Vector2 ChargedAttackOffset = Vector2.zero;
 
         [Space(5)]
+
         [Header("Combat - Getting Attacked")]
         public LayerMask PlayerDamagableLayers;
+        public int recoilSpeedDecayConstant = 3;
         public int recoilXSteps = 4;
         public int recoilYSteps = 10;
         public float recoilXSpeed = 45f;
         public float recoilYSpeed = 45f;
         public float recoilGravityScale = 1f;
-        public float recoilSpeedDecayConstant = 3f;
     }
 }

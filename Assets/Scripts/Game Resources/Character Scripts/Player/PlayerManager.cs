@@ -5,6 +5,7 @@ using UnityEngine;
 using WitchDoctor.GameResources.CharacterScripts.Player.AnimationEvents;
 using WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
+using WitchDoctor.Utils;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Player
 {
@@ -85,6 +86,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             if (_playerStates == null) _playerStates = new PlayerStates();
             _playerStates.Reset();
 
+            _maxHealth = _baseStats.BaseHealth;
+            _primaryAttackDamage = _baseStats.BasePrimaryAttackDamage;
+            _secondaryAttackDamage = _baseStats.BaseSecondaryAttackDamage;
+            _chargedAttackFactor = _baseStats.BaseChargedAttackFactor;
+
             base.InitCharacter();
         }
 
@@ -93,6 +99,28 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             _playerStates.Reset();
 
             base.DeInitCharacter();
+        }
+
+        protected override void OnDamageTaken(int damage)
+        {
+            base.OnDamageTaken(damage);
+            Debug.Log($"Damage Taken: {damage}\nCurrent Health: {_currHealth}");
+        }
+
+        protected override void OnDeath()
+        {
+            Debug.Log("Player Died");
+        }
+        #endregion
+
+        #region Unity Methods
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
+            {
+                _playerMovementManager.ProcessEnemyCollision(collision);
+                TakeDamage(10); // get contact damage from IGameEntity
+            }
         }
         #endregion
     }
