@@ -47,7 +47,7 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public float LedgeCheckX = 1f;
 
         [Space(5)]
-        [Header("Combat")]
+        [Header("Combat - Attacking")]
         public LayerMask PlayerAttackableLayers;
         [Tooltip("Time frame after which the attack chain is reset")] 
         public float AttackResetDuration = 0.3f;
@@ -63,5 +63,14 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public Vector2 Attack2Offset = Vector2.zero;
         public Vector2 Attack3Offset = Vector2.zero;
         public Vector2 ChargedAttackOffset = Vector2.zero;
+
+        [Space(5)]
+        [Header("Combat - Getting Attacked")]
+        public LayerMask PlayerDamagableLayers;
+        public int recoilXSteps = 4;
+        public int recoilYSteps = 10;
+        public float recoilXSpeed = 45f;
+        public float recoilYSpeed = 45f;
+        public float recoilGravityScale = 1f;
     }
 }

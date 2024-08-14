@@ -228,7 +228,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             if (obj.started && _playerStates.CanAttack && _playerMovementManager.IsGrounded) // We'll change the is grounded flag later if required
             {
-                _playerMovementManager.InterruptMovement();
+                _playerMovementManager.InterruptMovementActions();
 
                 // Debug.Log("Primary Attack Started");
                 _primaryAttackInputStarted = false;

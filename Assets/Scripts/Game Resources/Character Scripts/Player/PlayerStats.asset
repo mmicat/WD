@@ -46,3 +46,11 @@ MonoBehaviour:
   Attack2Offset: {x: 0.79, y: 0.98}
   Attack3Offset: {x: 0.75, y: 1.03}
   ChargedAttackOffset: {x: 0.75, y: 1.03}
+  PlayerDamagableLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  recoilXSteps: 8
+  recoilYSteps: 10
+  recoilXSpeed: 25
+  recoilYSpeed: 45
+  recoilGravityScale: 18

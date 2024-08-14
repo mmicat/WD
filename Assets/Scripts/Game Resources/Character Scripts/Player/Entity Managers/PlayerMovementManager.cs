@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Managers.InputManagement;
+using WitchDoctor.Utils;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 {
@@ -28,10 +29,14 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private PlayerCameraManager _playerCameraManager;
         #endregion
 
-        private float xAxis;
-        private float yAxis;
-        private float gravity;
-        private int stepsJumped;
+        // private float xAxis;
+        // private float yAxis;
+        private float defaultGravity;
+        private int stepsXRecoiled;
+        private int stepsYRecoiled;
+        private int stepsJumped = 0;
+        private Vector2 _damageDir;
+        private bool animateRecoil = false;
 
         private Vector2 movement;
 
@@ -84,7 +89,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _playerStates = InitializationContext.PlayerStates;
             _playerCameraManager = InitializationContext.PlayerCameraManager;
 
-            gravity = _rb.gravityScale;
+            defaultGravity = _rb.gravityScale;
             _inputWaitingCoroutine = StartCoroutine(AddListeners()); // We're waiting for the input system to initialize to avoid race conditions
         }
 
@@ -192,6 +197,28 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             }
         }
 
+        /// <summary>
+        /// Stops the player jump immediately, 
+        /// causing them to start falling as 
+        /// soon as the button is released
+        /// </summary>
+        private void StopJumpQuick()
+        {
+            stepsJumped = 0;
+            _playerStates.jumping = false;
+            _rb.velocity = new Vector2(_rb.velocity.x, 0f);
+        }
+
+        /// <summary>
+        /// stops the jump but lets the player 
+        /// hang in the air for awhile.
+        /// </summary>
+        private void StopJumpSlow()
+        {
+            stepsJumped = 0;
+            _playerStates.jumping = false;
+        }
+
         private void Dash()
         {
             if (_playerStates.dashing)
@@ -245,6 +272,101 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _rb.velocity = new Vector2(0, _rb.velocity.y);
         }
 
+        private void SetRecoil()
+        {
+            if (!IsGrounded) _playerStates.recoilingY = true;
+            _playerStates.recoilingX = true;
+        }
+
+        /// <summary>
+        /// Adds a recoil force to the player
+        /// </summary>
+        /// <param name="runAnimation">Determines whether to run associated animation</param>
+        /// <param name="cancelActions">determines whether to cancel other actions</param>
+        private void Recoil(bool runAnimation = true, bool cancelActions = true)
+        {
+            if (_playerStates.recoilingX || _playerStates.recoilingY)
+            {
+                if (cancelActions)
+                    InterruptMovementActions(true, true);
+
+                animateRecoil = runAnimation;
+
+                //since this is run after Walk, it takes priority, and effects momentum properly.
+                if (_playerStates.recoilingX)
+                {
+                    if (CharacterRenderFacingRight)
+                    {
+                        _rb.velocity = new Vector2(-_baseStats.recoilXSpeed, 0);
+                    }
+                    else
+                    {
+                        _rb.velocity = new Vector2(_baseStats.recoilXSpeed, 0);
+                    }
+                }
+                if (_playerStates.recoilingY)
+                {
+                    if (_damageDir.y < 0)
+                    {
+                        _rb.velocity = new Vector2(_rb.velocity.x, _baseStats.recoilYSpeed);
+                        _rb.gravityScale = _baseStats.recoilGravityScale;
+                    }
+                    else
+                    {
+                        _rb.velocity = new Vector2(_rb.velocity.x, -_baseStats.recoilYSpeed);
+                        _rb.gravityScale = _baseStats.recoilGravityScale;
+                    }
+
+                }
+            }
+            else
+            {
+                _rb.gravityScale = defaultGravity;
+            }
+        }
+
+        private void ProcessRecoil()
+        {
+            if (!_playerStates.IsRecoiling && animateRecoil)
+            {
+                _damageDir = Vector2.zero;
+                animateRecoil = false;
+            }
+
+            if (_playerStates.recoilingX == true && stepsXRecoiled < _baseStats.recoilXSteps)
+            {
+                stepsXRecoiled++;
+            }
+            else
+            {
+                StopRecoilX();
+            }
+            if (_playerStates.recoilingY == true && stepsYRecoiled < _baseStats.recoilYSteps)
+            {
+                stepsYRecoiled++;
+            }
+            else
+            {
+                StopRecoilY();
+            }
+            if (IsGrounded)
+            {
+                StopRecoilY();
+            }
+        }
+
+        private void StopRecoilX()
+        {
+            stepsXRecoiled = 0;
+            _playerStates.recoilingX = false;
+        }
+
+        private void StopRecoilY()
+        {
+            stepsYRecoiled = 0;
+            _playerStates.recoilingY = false;
+        }
+
         /// <summary>
         /// This limits how fast the player can fall
         /// Since platformers generally have increased 
@@ -268,6 +390,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             _animator.SetBool("Grounded", IsGrounded);
             _animator.SetBool("Dash", _playerStates.dashing);
+            _animator.SetBool("Recoiling", _playerStates.IsRecoiling);
             _animator.SetFloat("YVelocity", _rb.velocity.y);
 
             if (InputManager.Player.Jump.WasReleasedThisFrame())
@@ -290,39 +413,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 _playerStates.dashConditionsMet = true;
             }
         }
-
-        /// <summary>
-        /// Stops the player jump immediately, 
-        /// causing them to start falling as 
-        /// soon as the button is released
-        /// </summary>
-        private void StopJumpQuick()
-        {
-            stepsJumped = 0;
-            _playerStates.jumping = false;
-            _rb.velocity = new Vector2(_rb.velocity.x, 0f);
-        }
-
-        /// <summary>
-        /// stops the jump but lets the player 
-        /// hang in the air for awhile.
-        /// </summary>
-        private void StopJumpSlow()
-        {
-            stepsJumped = 0;
-            _playerStates.jumping = false;
-        }
         #endregion
         #endregion
 
         #region Public Methods
-        public void InterruptMovement(bool interruptJump = false)
+        public void InterruptMovementActions(bool interruptJump = false, bool interruptMove = false)
         {
             if (interruptJump)
                 StopJumpQuick();
+            if (interruptMove)
+                StopWalk();
 
             StopDashQuick();
-            // StopWalk();
         }
         #endregion
 
@@ -346,7 +448,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 }
 
                 _playerStates.jumping = true;
-
             }
         }
 
@@ -367,8 +468,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Unity Methods
         void Update()
         {
-            UpdateMovementStates();
             Walk(movement.x);
+            Recoil();
+            UpdateMovementStates();
         }
 
         void FixedUpdate()
@@ -376,7 +478,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             Flip();
             Jump();
             Dash();
+            ProcessRecoil();
             LimitFallSpeed();
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
+            {
+                _damageDir = Vector3.Normalize(collision.transform.position - transform.position);
+                SetRecoil();
+            }
+            
         }
 
 #if UNITY_EDITOR

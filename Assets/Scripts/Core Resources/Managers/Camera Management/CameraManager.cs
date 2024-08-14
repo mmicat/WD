@@ -12,6 +12,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
     {
         private CinemachineVirtualCamera _currentCamera;
         [SerializeField] private CinemachineVirtualCamera[] _allVirtualCameras;
+        [SerializeField] private float _cameraResetPanTime = 1.5f;
 
         private Coroutine _lerpTPanCoroutine;
         private Coroutine _panCameraCoroutine;
@@ -52,6 +53,8 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
 
         public override void CleanSingleton()
         {
+            ResetCurrentCamera(true);
+
             base.CleanSingleton();
         }
         #endregion
@@ -118,14 +121,14 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         /// <param name="panTime">the time for the pan to complete</param>
         /// <param name="panDirection">the direction of the pan</param>
         /// <param name="panToStartingPos">set true to set back to initial position</param>
-        public void PanCamera(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos)
+        public void PanCamera(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos, Action onPanComplete = null)
         {
             if (_panCameraCoroutine != null)
             {
                 StopCoroutine(_panCameraCoroutine);
             }
 
-            _panCameraCoroutine = StartCoroutine(PanCamera_Coroutine(panDistance, panTime, panDirection, panToStartingPos));
+            _panCameraCoroutine = StartCoroutine(PanCamera_Coroutine(panDistance, panTime, panDirection, panToStartingPos, onPanComplete));
         }
 
         public void SwapCamera(CinemachineVirtualCamera leftCam, CinemachineVirtualCamera rightCam, Vector2 triggerExitDirection)
@@ -161,8 +164,17 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         #region Internal Methods
         private void SetCurrentCamera(CinemachineVirtualCamera currCam)
         {
-            _currentCamera = currCam;
-            _framingTransposer = currCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            if (_currentCamera == null)
+            {
+                _currentCamera = currCam;
+                _framingTransposer = currCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                return;
+            }
+
+            ResetCurrentCamera(false, () => { 
+                _currentCamera = currCam;
+                _framingTransposer = currCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            });
         }
 
 
@@ -212,7 +224,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
             IsLerpingYDamping = false;
         }
 
-        private IEnumerator PanCamera_Coroutine(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos)
+        private IEnumerator PanCamera_Coroutine(float panDistance, float panTime, PanDirection panDirection, bool panToStartingPos, Action onPanComplete)
         {
             Vector2 endPos = Vector2.zero;
             Vector2 startingPos = Vector2.zero;
@@ -258,6 +270,18 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
                 _framingTransposer.m_TrackedObjectOffset = panLerp;
 
                 yield return null;
+            }
+
+            onPanComplete?.Invoke();
+        }
+
+        private void ResetCurrentCamera(bool hardReset = false, Action onCameraReset = null)
+        {
+            if (hardReset)
+                _framingTransposer.m_TrackedObjectOffset = _initialTrackedObjectOffset;
+            else
+            {
+                PanCamera(0f, _cameraResetPanTime, PanDirection.Up, true, onCameraReset);
             }
         }
         #endregion

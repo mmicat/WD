@@ -159,6 +159,19 @@ namespace WitchDoctor.Utils
         }
     }
 
+    public static class LayerUtils
+    {
+        public static bool Contains(this LayerMask mask, int layer)
+        {
+            return mask == (mask | (1 << layer));
+        }
+
+        public static bool Contains(this LayerMask mask, string layerName)
+        {
+            return mask.Contains(LayerMask.NameToLayer(layerName));
+        }
+    }
+
     public static class TextureUtils
     {
         public static Texture2D CopyTexture(Texture2D original)

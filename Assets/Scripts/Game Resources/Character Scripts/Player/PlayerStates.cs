@@ -27,9 +27,10 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool usingNPC;
 
         #region State Properties
-        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack;
+        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack && !recoilingX && !recoilingY;
         public bool CanAttack => !jumping && (walking || dashing || IsIdle || attacking);
         public bool IsMoving => walking || dashing || jumping;
+        public bool IsRecoiling => recoilingX || recoilingY;
         public bool CanMove => !attacking && (IsMoving || IsIdle);
         #endregion
 
