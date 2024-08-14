@@ -292,32 +292,37 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
                 animateRecoil = runAnimation;
 
+                var finalVelocity = Vector2.zero;
+
                 //since this is run after Walk, it takes priority, and effects momentum properly.
                 if (_playerStates.recoilingX)
                 {
                     if (CharacterRenderFacingRight)
                     {
-                        _rb.velocity = new Vector2(-_baseStats.recoilXSpeed, 0);
+                        finalVelocity = new Vector2(-_baseStats.recoilXSpeed, 0);
                     }
                     else
                     {
-                        _rb.velocity = new Vector2(_baseStats.recoilXSpeed, 0);
+                        finalVelocity = new Vector2(_baseStats.recoilXSpeed, 0);
                     }
                 }
                 if (_playerStates.recoilingY)
                 {
                     if (_damageDir.y < 0)
                     {
-                        _rb.velocity = new Vector2(_rb.velocity.x, _baseStats.recoilYSpeed);
+                        finalVelocity = new Vector2(finalVelocity.x, _baseStats.recoilYSpeed);
                         _rb.gravityScale = _baseStats.recoilGravityScale;
                     }
                     else
                     {
-                        _rb.velocity = new Vector2(_rb.velocity.x, -_baseStats.recoilYSpeed);
+                        finalVelocity = new Vector2(finalVelocity.x, -_baseStats.recoilYSpeed);
                         _rb.gravityScale = _baseStats.recoilGravityScale;
                     }
 
                 }
+                
+                var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(stepsYRecoiled, stepsXRecoiled));
+                _rb.velocity = finalVelocity / decayFactor;
             }
             else
             {

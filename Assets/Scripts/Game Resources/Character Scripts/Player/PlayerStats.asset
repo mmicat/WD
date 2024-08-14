@@ -49,8 +49,9 @@ MonoBehaviour:
   PlayerDamagableLayers:
     serializedVersion: 2
     m_Bits: 256
-  recoilXSteps: 8
+  recoilXSteps: 15
   recoilYSteps: 10
-  recoilXSpeed: 25
+  recoilXSpeed: 38
   recoilYSpeed: 45
-  recoilGravityScale: 18
+  recoilGravityScale: 10
+  recoilSpeedDecayConstant: 1.2

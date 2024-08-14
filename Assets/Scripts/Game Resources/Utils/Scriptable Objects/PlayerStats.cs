@@ -72,5 +72,6 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public float recoilXSpeed = 45f;
         public float recoilYSpeed = 45f;
         public float recoilGravityScale = 1f;
+        public float recoilSpeedDecayConstant = 3f;
     }
 }
