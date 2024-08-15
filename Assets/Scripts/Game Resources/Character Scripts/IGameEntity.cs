@@ -109,7 +109,15 @@ namespace WitchDoctor.GameResources.CharacterScripts
             if (_currHealth <= 0) OnDeath();
         }
 
-        protected abstract void OnDeath();
+        protected virtual void OnDeath()
+        {
+            if ( _managerList == null || _managerList.Count <= 0) return;
+
+            for (int i = 0; i <= _managerList.Count; i++)
+            {
+                _managerList[i].OnEntityDeath();
+            }
+        }
         #endregion
     }
 
@@ -160,6 +168,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public void InitManager();
 
         public void DeInitManager();
+
+        public void OnEntityDeath();
     }
 
     public interface IGameEntityManagerContext
@@ -191,6 +201,10 @@ namespace WitchDoctor.GameResources.CharacterScripts
         }
 
         public virtual void DeInitManager()
+        {
+        }
+
+        public virtual void OnEntityDeath()
         {
         }
     }

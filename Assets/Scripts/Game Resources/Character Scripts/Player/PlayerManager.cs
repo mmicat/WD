@@ -110,6 +110,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         protected override void OnDeath()
         {
             Debug.Log("Player Died");
+            // Process Player Death
+            _playerStates.Reset();
+            _playerStates.dead = true;
+
+            base.OnDeath();
         }
         #endregion
 
@@ -118,8 +123,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         {
             if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
             {
-                _playerMovementManager.ProcessEnemyCollision(collision);
                 TakeDamage(10); // get contact damage from IGameEntity
+                if (_playerStates.dead) _playerMovementManager.ProcessEnemyCollision(collision);
             }
         }
         #endregion

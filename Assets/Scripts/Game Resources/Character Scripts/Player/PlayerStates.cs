@@ -25,9 +25,10 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool atBench;
         public bool atNPC;
         public bool usingNPC;
+        public bool dead;
 
         #region State Properties
-        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack && !recoilingX && !recoilingY;
+        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack && !recoilingX && !recoilingY && !dead;
         public bool CanAttack => !jumping && (walking || dashing || IsIdle || attacking);
         public bool IsMoving => walking || dashing || jumping;
         public bool IsRecoiling => recoilingX || recoilingY;
@@ -54,6 +55,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
             atBench = false;
             atNPC = false;
             usingNPC = false;
+            dead = false;
         }
     }
 }

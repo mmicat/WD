@@ -39,6 +39,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private bool _primaryAttackChargeStarted;
         private bool _primaryAttackCharged;
 
+        private bool _blockInput;
         #endregion
 
         #region Serialized Properties
@@ -81,9 +82,17 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 _inputWaitingCoroutine = null;
             }
 
+            ResetManager();
+
             RemoveListeners();
 
             base.DeInitManager();
+        }
+
+        public override void OnEntityDeath()
+        {
+            ResetManager();
+            _blockInput = true;
         }
         #endregion
 
@@ -114,6 +123,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             InputManager.Player.PrimaryAttack.started -= PrimaryAttack_started;
             InputManager.Player.PrimaryAttack.canceled -= PrimaryAttack_canceled;
             InputManager.Player.SecondaryAttack.performed -= SecondaryAttack_performed;
+        }
+
+        private void ResetManager()
+        {
+            _primaryAttackInputTime = 0f;
+            _chargeInitTime = 0f;
+            _currChargeTime = 0f;
+            _primaryAttackInputStarted = false;
+            _primaryAttackChargeStarted = false;
+            _primaryAttackCharged = false;
+            _blockInput = false;
+            _chargeFXAnimator.gameObject.SetActive(false);
         }
 
         private void SetCurrentAttack(PrimaryAttackType value, bool updateAnimation = true)
@@ -194,21 +215,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void ChargeAttack()
         {
-            //if (_currChargeTime >= _baseStats.PrimaryAttackChargeTime)
-            //{
-            //    // Debug.Log("Charge Complete");
-            //    _primaryAttackChargeStarted = false;
-            //    _primaryAttackCharged = true;
-            //}
-            //else
-            //{
-                // Debug.Log("Charging Attack");
-                _currChargeTime = Time.time - _chargeInitTime;
-            //}
-
-            // _animator.SetBool("ChargingAttack", _primaryAttackChargeStarted);
+            _currChargeTime = Time.time - _chargeInitTime;
             SetCharging();
-            
         }
 
         private IEnumerator AttackChain_Coroutine()
@@ -226,6 +234,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Event Listeners
         private void PrimaryAttack_started(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             if (obj.started && _playerStates.CanAttack && _playerMovementManager.IsGrounded) // We'll change the is grounded flag later if required
             {
                 _playerMovementManager.InterruptMovementActions();
@@ -241,6 +251,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void PrimaryAttack_canceled(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             if (obj.canceled && !_primaryAttackInputStarted && _playerMovementManager.IsGrounded)
             {
                 // Debug.Log("Attack Cancelled");
@@ -253,11 +265,15 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void SecondaryAttack_performed(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             throw new System.NotImplementedException();
         }
 
         private void OnApplyHitBox_Event(PrimaryAttackType attackType)
         {
+            if (_blockInput) return;
+
             Collider2D[] collidersInContact;
             switch (attackType)
             {
@@ -290,6 +306,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void OnAttackComplete_Event()
         {
+            if (_blockInput) return;
+
             // Debug.Log("Attack Animation Complete");
             _playerStates.attacking = false;
             _primaryAttackCharged = false;
@@ -301,6 +319,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void OnCharacterChargeComplete()
         {
+            if (_blockInput) return;
+
             // This is just the current implementation since
             // we only have one animation might change later
             _chargeFXAnimator.gameObject.SetActive(true);
@@ -308,6 +328,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void OnChargeFXComplete()
         {
+            if (_blockInput) return;
+
             // Debug.Log("Charge Complete");
             _primaryAttackChargeStarted = false;
             _primaryAttackCharged = true;

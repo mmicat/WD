@@ -15,8 +15,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private Animator _animator;
         private TrailRenderer _dashTrail;
 
-        [Space(5)]
-
         private Transform _groundTransform;
         private Transform _ledgeTransform;
         private Transform _roofTransform;
@@ -29,18 +27,15 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private PlayerCameraManager _playerCameraManager;
         #endregion
 
-        // private float xAxis;
-        // private float yAxis;
         private float defaultGravity;
-        private int stepsXRecoiled;
-        private int stepsYRecoiled;
+        private int stepsXRecoiled = 0;
+        private int stepsYRecoiled = 0;
         private int stepsJumped = 0;
-        private Vector2 _damageDir;
         private bool animateRecoil = false;
+        private bool _blockInput = false;
 
         private Vector2 movement;
-
-        // Dashing
+        private Vector2 _damageDir;
         private Vector2 _dashDir;
 
         private Coroutine _dashCancelCoroutine;
@@ -102,9 +97,17 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 _inputWaitingCoroutine = null;
             }
 
+            ResetManager();
+
             RemoveListeners();
 
             base.DeInitManager();
+        }
+
+        public override void OnEntityDeath()
+        {
+            ResetManager();
+            _blockInput = true;
         }
         #endregion
 
@@ -127,6 +130,31 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             InputManager.Player.Jump.performed -= Jump_performed;
             InputManager.Player.Dash.performed -= Dash_performed;
         }
+
+        private void ResetManager()
+        {
+            InterruptMovementActions(true, true);
+            _rb.gravityScale = defaultGravity;
+            stepsXRecoiled = 0;
+            stepsYRecoiled = 0;
+            stepsJumped = 0;
+            animateRecoil = false;
+            _blockInput = false;
+            movement = Vector2.zero;
+            _damageDir = Vector2.zero;
+            _dashDir = Vector2.zero;
+
+            if (_dashCancelCoroutine != null)
+            {
+                StopCoroutine(_dashCancelCoroutine);
+                _dashCancelCoroutine = null;
+            }
+            if (_dashCancelCoroutine != null)
+            {
+                StopCoroutine(_dashLedgeCancelCoroutine);
+                _dashLedgeCancelCoroutine = null;
+            }
+    }
 
         #region Movement Scripts
         /// <summary>
@@ -386,7 +414,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         /// </summary>
         private void LimitFallSpeed()
         {
-
             if (_rb.velocity.y < -Mathf.Abs(_baseStats.MaxFallSpeed))
             {
                 _rb.velocity = new Vector2(_rb.velocity.x, Mathf.Clamp(_rb.velocity.y, -Mathf.Abs(_baseStats.MaxFallSpeed), Mathf.Infinity));
@@ -448,6 +475,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Event Listeners
         private void MovementPerformed(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             if (obj.performed)
             {
                 movement.x = obj.ReadValue<Vector2>().x;
@@ -457,6 +486,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void Jump_performed(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             if (obj.performed && IsGrounded && _playerStates.CanMove)
             {
                 if (_playerStates.dashing)
@@ -470,6 +501,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void Dash_performed(InputAction.CallbackContext obj)
         {
+            if (_blockInput) return;
+
             if (obj.performed && _playerStates.dashConditionsMet && _playerStates.CanMove)
             {
                 if (_playerStates.jumping)
