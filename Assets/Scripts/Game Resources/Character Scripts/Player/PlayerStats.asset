@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472ed017c5aa9ed47b50f638f7efe840, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
+  BaseHealth: 30
+  BaseAttack: 15
   WalkSpeed: 15
   JumpSpeed: 45
   MaxFallSpeed: 45
@@ -35,6 +37,9 @@ MonoBehaviour:
   PlayerAttackableLayers:
     serializedVersion: 2
     m_Bits: 256
+  BasePrimaryAttackDamage: 15
+  BaseSecondaryAttackDamage: 30
+  BaseChargedAttackFactor: 1.5
   AttackResetDuration: 0.1
   PrimaryAttackChargeDelay: 0.15
   PrimaryAttackChargeTime: 0.85

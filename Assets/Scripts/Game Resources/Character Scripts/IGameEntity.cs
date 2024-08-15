@@ -113,7 +113,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             if ( _managerList == null || _managerList.Count <= 0) return;
 
-            for (int i = 0; i <= _managerList.Count; i++)
+            for (int i = 0; i < _managerList.Count; i++)
             {
                 _managerList[i].OnEntityDeath();
             }

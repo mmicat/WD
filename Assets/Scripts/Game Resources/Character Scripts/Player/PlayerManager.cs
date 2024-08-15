@@ -86,6 +86,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             if (_playerStates == null) _playerStates = new PlayerStates();
             _playerStates.Reset();
 
+            // Handling this for respawn purposes
+            _animator.SetBool("Death", _playerStates.dead);
+
             _maxHealth = _baseStats.BaseHealth;
             _primaryAttackDamage = _baseStats.BasePrimaryAttackDamage;
             _secondaryAttackDamage = _baseStats.BaseSecondaryAttackDamage;
@@ -97,6 +100,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         protected override void DeInitCharacter()
         {
             _playerStates.Reset();
+
+            _animator.SetBool("Death", _playerStates.dead);
 
             base.DeInitCharacter();
         }
@@ -114,6 +119,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             _playerStates.Reset();
             _playerStates.dead = true;
 
+            _animator.SetBool("Death", _playerStates.dead);
+
             base.OnDeath();
         }
         #endregion
@@ -124,7 +131,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
             {
                 TakeDamage(10); // get contact damage from IGameEntity
-                if (_playerStates.dead) _playerMovementManager.ProcessEnemyCollision(collision);
+                if (!_playerStates.dead) _playerMovementManager.ProcessEnemyCollision(collision);
             }
         }
         #endregion
