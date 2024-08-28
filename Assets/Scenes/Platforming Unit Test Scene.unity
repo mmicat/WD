@@ -347,7 +347,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 1
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.10807812}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -358,7 +358,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 14.967411, y: 2.8652673}
+  m_Size: {x: 14.967411, y: 3.0814235}
   m_EdgeRadius: 0
 --- !u!1 &246018877
 GameObject:
@@ -555,7 +555,7 @@ Transform:
   m_GameObject: {fileID: 276428913}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.966341, y: -9.679398, z: 6.3787823}
+  m_LocalPosition: {x: -11.876341, y: 1.010603, z: 6.3787823}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1058,7 +1058,7 @@ GameObject:
   - component: {fileID: 683913020}
   - component: {fileID: 683913019}
   m_Layer: 8
-  m_Name: Dummy Amalgam
+  m_Name: Ground Amalgam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1072,7 +1072,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683913018}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1123,18 +1123,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.48, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3.2815166, y: 3.3125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.31, y: 3.19}
   m_EdgeRadius: 0
 --- !u!212 &683913021
 SpriteRenderer:
@@ -1174,11 +1174,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2045176385
-  m_SortingLayer: 4
+  m_SortingLayerID: 76549043
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.7146225, g: 0.08174329, b: 0.08174329, a: 1}
+  m_Sprite: {fileID: -488611155, guid: 8b789f76b72ebe2408f1abacff6388f4, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1774,7 +1774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 2, y: -3, z: 0}
+  m_TrackedObjectOffset: {x: 2, y: 0, z: 0}
   m_LookaheadTime: 0.05
   m_LookaheadSmoothing: 1
   m_LookaheadIgnoreY: 1
@@ -2468,11 +2468,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3140585437237668492, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.5
+      value: -1.41
       objectReference: {fileID: 0}
     - target: {fileID: 3140585437237668492, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6
+      value: 6.09
       objectReference: {fileID: 0}
     - target: {fileID: 3140585437237668492, guid: 6ddde1597f9e1a24db80b5231f7abee5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15608,9 +15608,9 @@ CompositeCollider2D:
   - m_Collider: {fileID: 27565526}
     m_ColliderPaths:
     - - X: 400437088
-        Y: 38326336
+        Y: 40487900
       - X: 250762960
-        Y: 38326336
+        Y: 40487900
       - X: 250762960
         Y: 9673665
       - X: 400437088
@@ -15676,8 +15676,8 @@ CompositeCollider2D:
       - {x: -24.952303, y: 27.433886}
       - {x: 67.88672, y: 27.433857}
     - - {x: 40.043682, y: 0.9673665}
-      - {x: 40.043682, y: 3.8326337}
-      - {x: 25.076296, y: 3.8326044}
+      - {x: 40.043682, y: 4.04879}
+      - {x: 25.076296, y: 4.048761}
       - {x: 25.076324, y: 0.9673665}
     - - {x: 1.5274289, y: -8.058128}
       - {x: 1.5274876, y: -6.078129}
@@ -16233,11 +16233,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1639963870807641989, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.030657
+      value: -12.940657
       objectReference: {fileID: 0}
     - target: {fileID: 1639963870807641989, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.9518657
+      value: 3.7381349
       objectReference: {fileID: 0}
     - target: {fileID: 1639963870807641989, guid: 700363eda59fc794b8cfc9498cd81e0d, type: 3}
       propertyPath: m_LocalPosition.z

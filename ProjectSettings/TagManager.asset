@@ -49,7 +49,7 @@ TagManager:
   - name: Foreground
     uniqueID: 597491497
     locked: 0
-  - name: Player
+  - name: Character
     uniqueID: 76549043
     locked: 0
   - name: Platforms

@@ -25,7 +25,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         [SerializeField] private float _fallYPanTime = 0.35f;
 
         private float _initialYPanAmount;
-        private Vector2 _initialTrackedObjectOffset;
+        private Vector3 _initialTrackedObjectOffset;
 
         public static bool IsLerpingYDamping { get; private set; }
         public static bool LerpedFromPlayerFalling { get; private set; }
@@ -278,7 +278,12 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         private void ResetCurrentCamera(bool hardReset = false, Action onCameraReset = null)
         {
             if (hardReset)
+            {
+                if (_panCameraCoroutine != null) StopCoroutine(_panCameraCoroutine);
+                if (_lerpTPanCoroutine != null) StopCoroutine(_lerpTPanCoroutine);
                 _framingTransposer.m_TrackedObjectOffset = _initialTrackedObjectOffset;
+                _framingTransposer.m_YDamping = _initialYPanAmount;
+            }
             else
             {
                 PanCamera(0f, _cameraResetPanTime, PanDirection.Up, true, onCameraReset);

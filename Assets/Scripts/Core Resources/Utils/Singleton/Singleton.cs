@@ -154,12 +154,12 @@ namespace WitchDoctor.CoreResources.Utils.Singleton
                 if (_instance == null)
                 {
                     _instance = FindObjectOfType<T>();
-                    if (_instance == null)
-                    {
-                        GameObject obj = new GameObject();
-                        obj.name = typeof(T).Name;
-                        _instance = obj.AddComponent<T>();
-                    }
+                    //if (_instance == null)
+                    //{
+                    //    GameObject obj = new GameObject();
+                    //    obj.name = typeof(T).Name;
+                    //    _instance = obj.AddComponent<T>();
+                    //}
                 }
 
                 return _instance;
