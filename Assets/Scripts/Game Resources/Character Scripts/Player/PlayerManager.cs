@@ -18,6 +18,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         private Transform _cameraFollowTransform;
         [SerializeField]
         private PlayerStats _baseStats;
+        private Rigidbody2D _rb;
+        private PlayerStates _playerStates;
         
         [Space(5)]
 
@@ -43,8 +45,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         [SerializeField]
         private Transform _roofTransform;
         
-        private Rigidbody2D _rb;
-        private PlayerStates _playerStates;
         #endregion
 
         #region Entity Managers
@@ -108,20 +108,21 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
 
         protected override void OnDamageTaken(int damage)
         {
-            base.OnDamageTaken(damage);
             Debug.Log($"Damage Taken: {damage}\nCurrent Health: {_currHealth}");
+
+            base.OnDamageTaken(damage);
         }
 
         protected override void OnDeath()
         {
+            base.OnDeath();
+
             Debug.Log("Player Died");
             // Process Player Death
             _playerStates.Reset();
             _playerStates.dead = true;
 
             _animator.SetBool("Death", _playerStates.dead);
-
-            base.OnDeath();
         }
         #endregion
 

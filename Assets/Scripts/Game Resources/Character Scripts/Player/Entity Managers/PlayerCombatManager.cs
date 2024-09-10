@@ -49,14 +49,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private Transform _meleeAttackCenter;
         #endregion
 
-#if UNITY_EDITOR
         [Space(5)]
         [Header("Debug Options")]
         [SerializeField] private bool _primaryAttack1Hitbox;
         [SerializeField] private bool _primaryAttack2Hitbox, 
             _primaryAttack3Hitbox, 
             _primaryChargedAttackHitbox;
-#endif
 
         #region Overrides
         public override void InitManager()
@@ -93,6 +91,26 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             ResetManager();
             _blockInput = true;
+        }
+
+        protected override void DisplayDebugElements()
+        {
+            if (_primaryAttack1Hitbox)
+            {
+                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack1Offset, _baseStats.Attack1HitboxRadius);
+            }
+            if (_primaryAttack2Hitbox)
+            {
+                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack2Offset, _baseStats.Attack2HitboxRadius);
+            }
+            if (_primaryAttack3Hitbox)
+            {
+                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack3Offset, _baseStats.Attack3HitboxRadius);
+            }
+            if (_primaryChargedAttackHitbox)
+            {
+                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.ChargedAttackOffset, _baseStats.ChargedAttackHitboxRadius);
+            }
         }
         #endregion
 
@@ -275,6 +293,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             if (_blockInput) return;
 
             Collider2D[] collidersInContact;
+            int currDamage = _baseStats.BasePrimaryAttackDamage;
             switch (attackType)
             {
                 case PrimaryAttackType.Attack1:
@@ -288,6 +307,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                     break;
                 case PrimaryAttackType.ChargedAttack:
                     collidersInContact = Physics2D.OverlapCircleAll(_meleeAttackCenter.position + (Vector3)_baseStats.ChargedAttackOffset, _baseStats.ChargedAttackHitboxRadius, _baseStats.PlayerAttackableLayers);
+                    currDamage = (int) (currDamage * _baseStats.BaseChargedAttackFactor);
                     break;
                 default:
                     collidersInContact = null;
@@ -301,6 +321,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             {
                 // Process the seperate collisions here
                 Debug.Log($"Found Amalgam {collidersInContact[i].gameObject.name}");
+                collidersInContact[i].GetComponent<GameEntity>()?.TakeDamage(currDamage);
             }
         }
 
@@ -345,25 +366,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            if (_primaryAttack1Hitbox)
-            {
-                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack1Offset, _baseStats.Attack1HitboxRadius);
-            }
-            if (_primaryAttack2Hitbox)
-            {
-                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack2Offset, _baseStats.Attack2HitboxRadius);
-            }
-            if (_primaryAttack3Hitbox)
-            {
-                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.Attack3Offset, _baseStats.Attack3HitboxRadius);
-            }
-            if (_primaryChargedAttackHitbox)
-            {
-                Gizmos.DrawWireSphere(_meleeAttackCenter.position + (Vector3)_baseStats.ChargedAttackOffset, _baseStats.ChargedAttackHitboxRadius);
-            }
-        }
+        
 #endif
         #endregion
     }

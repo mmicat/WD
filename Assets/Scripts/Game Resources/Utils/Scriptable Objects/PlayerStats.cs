@@ -9,7 +9,7 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
     {
         [Header("Base Stats")]
         public int BaseHealth = 100;
-        public int BaseAttack = 15;
+        public int BaseAttackDamage = 15;
 
         [Space(5)]
 

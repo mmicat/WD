@@ -16,7 +16,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public bool chargingAttack;
         public bool interact;
         public bool interacting;
-        public bool lookingRight;
         public bool recoilingX;
         public bool recoilingY;
         public bool casting;
@@ -46,7 +45,6 @@ namespace WitchDoctor.GameResources.CharacterScripts
             chargingAttack = false;
             interact = false;
             interacting = false;
-            lookingRight = false;
             recoilingX = false;
             recoilingY = false;
             casting = false;

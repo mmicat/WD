@@ -21,6 +21,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         protected int _maxHealth;
         protected int _currHealth;
         protected int _contactDamage;
+        protected bool _invincible;
 
         public bool IsPlayer => _isPlayer;
 
@@ -57,6 +58,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
             for (int i = 0; i < _managerList.Count; i++)
                 _managerList[i].InitManager();
+
+            _invincible = false;
         }
 
         protected void DeInitializeManagers()
@@ -88,6 +91,11 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             DeInitCharacter();
         }
+
+        private void OnDrawGizmos()
+        {
+            DisplayDebugElements();
+        }
         #endregion
 
         #region Internal Methods
@@ -104,6 +112,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
         protected virtual void OnDamageTaken(int damage)
         {
+            if (_invincible) return;
+
             _currHealth = Mathf.Clamp(_currHealth - damage, 0, _maxHealth);
 
             if (_currHealth <= 0) OnDeath();
@@ -111,12 +121,19 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
         protected virtual void OnDeath()
         {
+            _invincible = true;
+
             if ( _managerList == null || _managerList.Count <= 0) return;
 
             for (int i = 0; i < _managerList.Count; i++)
             {
                 _managerList[i].OnEntityDeath();
             }
+        }
+
+        protected virtual void DisplayDebugElements()
+        {
+
         }
         #endregion
     }
@@ -148,6 +165,20 @@ namespace WitchDoctor.GameResources.CharacterScripts
 
     public abstract class AmalgamEntity : GameEntity
     {
+        [Space(5)]
+        [Header("Vision Cone")]
+        [SerializeField]
+        protected bool _displayVisionCone = false;
+        [SerializeField]
+        protected Transform _visionCone;
+        protected Mesh _visionConeMesh;
+        [SerializeField, Tooltip("Defines the number of triangles used to create the vision cone")]
+        protected int _visionConeResolution = 50;
+        [SerializeField]
+        protected float _visionRadius = 3f;
+        [SerializeField, Range(0f, 360f)]
+        protected float _viewAngle = 0f;
+
         protected override void InitCharacter()
         {
             base.InitCharacter();
@@ -207,6 +238,18 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public virtual void OnEntityDeath()
         {
         }
+
+        protected virtual void DisplayDebugElements()
+        {
+
+        }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            DisplayDebugElements();
+        }
+#endif
     }
 
     public abstract class GameEntityManagerContext<TEntityManager, TEntityManagerContext> : IGameEntityManagerContext

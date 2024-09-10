@@ -53,6 +53,12 @@ namespace WitchDoctor.Utils
             return Mathf.Log10(val) * 20;
         }
 
+        public static Vector3 ConvertAngleToVector(float angle)
+        {
+            float angleRad = angle * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+        }
+
         #region Byte String Conversions
         public static string ConvertByteToString(byte[] _bytes)
         {

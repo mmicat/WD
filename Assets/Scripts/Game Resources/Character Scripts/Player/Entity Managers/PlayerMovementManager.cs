@@ -44,12 +44,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Serialized Fields
         [SerializeField] private PlayerStats _baseStats;
 
-#if UNITY_EDITOR
         [Space(5)]
         [Header("Debug Options")]
         [SerializeField] private bool _groundRaycastDims;
         [SerializeField] private bool _ledgeRaycastDims, _roofRaycastDims;
-#endif
         #endregion
 
         #region Platform Checks
@@ -108,6 +106,33 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             ResetManager();
             _blockInput = true;
+        }
+
+        protected override void DisplayDebugElements()
+        {
+            if (_groundRaycastDims)
+            {
+                Vector3 centerPos = _groundTransform.position + (Vector3.down * _baseStats.GroundCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.GroundCheckX, _baseStats.GroundCheckY, 0f);
+                Gizmos.DrawLine(_groundTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_ledgeRaycastDims)
+            {
+                Vector3 centerPos = _ledgeTransform.position + (Vector3.down * _baseStats.LedgeCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY, 0f);
+                Gizmos.DrawLine(_ledgeTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_roofRaycastDims)
+            {
+                Vector3 centerPos = _roofTransform.position + (Vector3.up * _baseStats.RoofCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
+                Gizmos.DrawLine(_roofTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
         }
         #endregion
 
@@ -533,32 +558,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            if (_groundRaycastDims)
-            {
-                Vector3 centerPos = _groundTransform.position + (Vector3.down * _baseStats.GroundCheckDist);
-                Vector3 cubeSize = new Vector3(_baseStats.GroundCheckX, _baseStats.GroundCheckY, 0f);
-                Gizmos.DrawLine(_groundTransform.position, centerPos);
-                Gizmos.DrawWireCube(centerPos, cubeSize);
-            }
-
-            if (_ledgeRaycastDims)
-            {
-                Vector3 centerPos = _ledgeTransform.position + (Vector3.down * _baseStats.LedgeCheckDist);
-                Vector3 cubeSize = new Vector3(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY, 0f);
-                Gizmos.DrawLine(_ledgeTransform.position, centerPos);
-                Gizmos.DrawWireCube(centerPos, cubeSize);
-            }
-
-            if (_roofRaycastDims)
-            {
-                Vector3 centerPos = _roofTransform.position + (Vector3.up * _baseStats.RoofCheckDist);
-                Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
-                Gizmos.DrawLine(_roofTransform.position, centerPos);
-                Gizmos.DrawWireCube(centerPos, cubeSize);
-            }
-        }
+        
 #endif
         #endregion
     }
