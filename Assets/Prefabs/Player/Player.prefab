@@ -201,7 +201,7 @@ Transform:
   m_GameObject: {fileID: 1984877552285731563}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.5235977, y: 0.07312228, z: -16.161238}
+  m_LocalPosition: {x: -0.29, y: 0.07312228, z: 0}
   m_LocalScale: {x: 1.1385629, y: 0.9878494, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -266,7 +266,7 @@ Transform:
   m_GameObject: {fileID: 2099878624845995233}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.9529865, y: -0.03352972, z: 16.161238}
+  m_LocalPosition: {x: 2.81, y: -0.03352972, z: 0}
   m_LocalScale: {x: 0.87830013, y: 1.0123, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -420,7 +420,7 @@ Transform:
   m_GameObject: {fileID: 5415182235810008549}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.9730766, y: 4.349729, z: 16.161238}
+  m_LocalPosition: {x: 0.49, y: 4.349729, z: 0}
   m_LocalScale: {x: 0.87830013, y: 1.0123, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -626,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 7921919424814344179}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.9730766, y: -0.03352972, z: 16.161238}
+  m_LocalPosition: {x: 0.14, y: -0.03352972, z: 0}
   m_LocalScale: {x: 0.87830013, y: 1.0123, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -707,6 +707,10 @@ PrefabInstance:
     - target: {fileID: 8690950337773083281, guid: 818cd16f10e68a646b5277a9e97701d6, type: 3}
       propertyPath: m_Name
       value: Charge Flash
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690950337773083281, guid: 818cd16f10e68a646b5277a9e97701d6, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8690950337773083281, guid: 818cd16f10e68a646b5277a9e97701d6, type: 3}
       propertyPath: m_IsActive

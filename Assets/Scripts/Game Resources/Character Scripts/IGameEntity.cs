@@ -170,14 +170,18 @@ namespace WitchDoctor.GameResources.CharacterScripts
         [SerializeField]
         protected bool _displayVisionCone = false;
         [SerializeField]
-        protected Transform _visionCone;
+        protected Transform _visionConeCenter;
         protected Mesh _visionConeMesh;
-        [SerializeField, Tooltip("Defines the number of triangles used to create the vision cone")]
+        [SerializeField, Range(1, 300), Tooltip("Defines the number of triangles used to create the vision cone")]
         protected int _visionConeResolution = 50;
         [SerializeField]
         protected float _visionRadius = 3f;
         [SerializeField, Range(0f, 360f)]
         protected float _viewAngle = 0f;
+        [SerializeField, Range (0f, 2f)]
+        protected float _visionConeRefreshTime = 1f;
+        [SerializeField, Range(0, 10)]
+        protected int _alertMaxSteps;
 
         protected override void InitCharacter()
         {
@@ -189,6 +193,8 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             base.DeInitCharacter();
         }
+
+        protected abstract void UpdateAmalgamStates();
     }
 
 

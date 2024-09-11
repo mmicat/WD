@@ -12,3 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e907d9eb8639474f955f41555653b95, type: 3}
   m_Name: Ground Amalgam Stats
   m_EditorClassIdentifier: 
+  BaseHealth: 100
+  BaseAttackDamage: 15
+  ContactDamage: 10
+  WalkSpeed: 25
+  GroundCheckDist: 0.24
+  GroundCheckY: 0.3
+  GroundCheckX: 1.73
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  RoofCheckDist: 0.32
+  RoofCheckY: 0.51
+  RoofCheckX: 1.69
+  LedgeCheckDist: 0.39
+  LedgeCheckY: 2.57
+  LedgeCheckX: 0.35
+  AmalgamAttackableLayers:
+    serializedVersion: 2
+    m_Bits: 128

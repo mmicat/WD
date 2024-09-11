@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using WitchDoctor.GameResources.CharacterScripts;
-using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.Utils;
+using WitchDoctor.GameResources.Utils.ScriptableObjects;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 {
@@ -37,12 +34,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private Transform _ledgeTransform;
         [SerializeField]
         private Transform _roofTransform;
+        [SerializeField, Tooltip("The Amount of time (in seconds) to pause after an obstacle is encounter")]
+        private float _patrolStopWaitTime = 0f; 
 
         [Space(5)]
 
         [Header("Patrol Distance")]
-        [SerializeField]
-        private bool _displayPatrolLines = false;
+        
         [SerializeField]
         private float _patrolLineGuideSize = 2f;
         [SerializeField]
@@ -50,6 +48,30 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         [SerializeField]
         private float _rightTravelDistance = 3f;
         private Vector3 _referencePosition;
+
+        private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
+
+        private bool _isAirborne = true;
+
+        private Coroutine _flipCoroutine;
+        private Coroutine _playerDetectionCoroutine;
+
+        [Space(5)]
+        [Header("Debug Options")]
+        [SerializeField] private bool _groundRaycastDims;
+        [SerializeField] private bool _ledgeRaycastDims, _roofRaycastDims;
+        [SerializeField] private bool _displayPatrolLines = false;
+        #endregion
+
+        #region Platform Checks
+        public bool IsGrounded => Physics2D.BoxCast(_groundTransform.position, new Vector2(_baseStats.GroundCheckX, _baseStats.GroundCheckY),
+            0f, Vector2.down, _baseStats.GroundCheckDist, _baseStats.GroundLayer);
+
+        public bool IsNextToLedge => !Physics2D.BoxCast(_ledgeTransform.position, new Vector2(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY),
+            0f, Vector2.down, _baseStats.LedgeCheckDist, _baseStats.GroundLayer);
+
+        public bool IsRoofed => Physics2D.BoxCast(_roofTransform.position, new Vector2(_baseStats.RoofCheckX, _baseStats.RoofCheckY),
+            0f, Vector2.up, _baseStats.RoofCheckDist, _baseStats.GroundLayer);
         #endregion
 
         #region Overrides
@@ -61,11 +83,30 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
             GetVisionConeMesh();
 
+            if (_amalgamStates == null) _amalgamStates = new AmalgamStates();
+            _amalgamStates.Reset();
+
+            if (_playerDetectionCoroutine != null)
+            {
+                StopCoroutine(_playerDetectionCoroutine);
+                _playerDetectionCoroutine = null;
+            }
+
+            _playerDetectionCoroutine = StartCoroutine(CheckForPlayer());
+
             base.InitCharacter();
         }
 
         protected override void DeInitCharacter()
         {
+            if (_playerDetectionCoroutine != null)
+            {
+                StopCoroutine( _playerDetectionCoroutine );
+                _playerDetectionCoroutine = null;
+            }
+
+            _amalgamStates.Reset();
+
             base.DeInitCharacter();
         }
 
@@ -88,6 +129,17 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             Debug.Log("Amalgam Died");
         }
 
+        protected override void UpdateAmalgamStates()
+        {
+            if (IsGrounded)
+            {
+                _isAirborne = false;
+            }
+            else
+            {
+                _isAirborne = true;
+            }
+        }
 
         protected override void DisplayDebugElements()
         {
@@ -104,33 +156,125 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 Gizmos.DrawCube(left, _patrolLineGuideSize * guideSize);
                 Gizmos.DrawCube(right, _patrolLineGuideSize * guideSize);
             }
-#endif
+
             if (_displayVisionCone)
             {
                 //SetupVisionConeMesh();
                 if (_visionConeMesh == null)
                 {
-                    var mesh = GetVisionConeMesh();
                 }
+                    var mesh = GetVisionConeMesh();
                 
-                Gizmos.DrawMesh(_visionConeMesh, _visionCone.position, _visionCone.rotation);
+                float zRot = CharacterRenderFacingRight ? 0 : 180;
+                Quaternion rotation = Quaternion.Euler(0f, 0f, zRot);
+
+                Gizmos.DrawMesh(_visionConeMesh, _visionConeCenter.position, rotation);
             }
+
+            if (_groundRaycastDims)
+            {
+                Vector3 centerPos = _groundTransform.position + (Vector3.down * _baseStats.GroundCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.GroundCheckX, _baseStats.GroundCheckY, 0f);
+                Gizmos.DrawLine(_groundTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_ledgeRaycastDims)
+            {
+                Vector3 centerPos = _ledgeTransform.position + (Vector3.down * _baseStats.LedgeCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.LedgeCheckX, _baseStats.LedgeCheckY, 0f);
+                Gizmos.DrawLine(_ledgeTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_roofRaycastDims)
+            {
+                Vector3 centerPos = _roofTransform.position + (Vector3.up * _baseStats.RoofCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
+                Gizmos.DrawLine(_roofTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+#endif
+        }
+        #endregion
+
+        #region Unity Methods
+        private void Update()
+        {
+            UpdateAmalgamStates();
         }
         #endregion
 
         #region Movement
+        private void Walk()
+        {
+            if (_amalgamStates.walking)
+            {
+                float dir = CharacterRenderFacingRight ? 1f : -1f;
+                _rb.velocity = new Vector2(dir * _baseStats.WalkSpeed, _rb.velocity.y);
 
+
+                // _animator.SetBool("Walking", _playerStates.walking);
+            }
+        }
+
+        private IEnumerator ObstacleCoroutine()
+        {
+            _amalgamStates.walking = false;           
+            yield return new WaitForSeconds(_patrolStopWaitTime);
+            Flip();
+            _amalgamStates.walking = true;
+        }
+
+        private void Flip()
+        {
+
+        }
         #endregion
 
         #region Utils
+        private IEnumerator CheckForPlayer()
+        {
+            int alertCounter = 0;
+            while (true)
+            {
+                var colliders = Physics2D.OverlapCircleAll(_visionConeCenter.position, _visionRadius, _baseStats.AmalgamAttackableLayers);
+                if (colliders != null && colliders.Length > 0)
+                {
+                    for (int i = 0; i < colliders.Length; i++)
+                    {
+                        // Check if collider is in the specified range
+                        Vector3 dist = colliders[i].transform.position - _visionConeCenter.position;
+                        float angle = Vector3.Angle(colliders[i].transform.position, _visionConeCenter.position);
+                        bool inFront = (CharacterRenderFacingRight == dist.x > 0);
+                        bool inVisionCone = angle < _viewAngle / 2;
+                        _amalgamStates.alert = inFront && inVisionCone;
+
+                        if (_amalgamStates.alert) alertCounter = 0;
+                    }
+                }
+                else if (_amalgamStates.alert)
+                {
+                    alertCounter++;
+                    if (alertCounter > _alertMaxSteps)
+                    {
+                        _amalgamStates.alert = false;
+                        alertCounter = 0;
+                    }
+                }
+
+                yield return new WaitForSeconds(_visionConeRefreshTime);
+            }
+        }
+
         private Mesh GetVisionConeMesh()
         {
             Mesh mesh = new Mesh();
 
             Vector3 origin = Vector3.zero;
             float fov = _viewAngle;
-            int resolution = _visionConeResolution;
-            float angle = 0f;
+            int resolution = _visionConeResolution ;
+            float angle = 0f + (fov / 2);
             float angleIncrease = fov / resolution;
             float viewDistance = _visionRadius;
 
