@@ -61,7 +61,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         [Space(5)]
         [Header("Debug Options")]
         [SerializeField] private bool _groundRaycastDims;
-        [SerializeField] private bool _ledgeRaycastDims, _roofRaycastDims;
+        [SerializeField] private bool _ledgeRaycastDims, _roofRaycastDims, _obstacleRaycastDims;
         [SerializeField] private bool _displayPatrolLines = false;
         #endregion
 
@@ -198,6 +198,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 Vector3 cubeSize = new Vector3(_baseStats.RoofCheckX, _baseStats.RoofCheckY, 0f);
                 Gizmos.DrawLine(_roofTransform.position, centerPos);
                 Gizmos.DrawWireCube(centerPos, cubeSize);
+            }
+
+            if (_obstacleRaycastDims)
+            {
+
             }
 #endif
         }
