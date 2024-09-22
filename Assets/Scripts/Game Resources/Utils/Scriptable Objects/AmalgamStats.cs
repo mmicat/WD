@@ -41,6 +41,13 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
 
         [Space(5)]
 
+        [Header("Obstacle Checking")]
+        public float ObstacleCheckDist = 0.2f;
+        public float ObstacleCheckX = 0.2f;
+        public float ObstacleCheckY = 1f;
+        
+        [Space(5)]
+
         [Header("Combat - Attacking")]
         public LayerMask AmalgamAttackableLayers;
 

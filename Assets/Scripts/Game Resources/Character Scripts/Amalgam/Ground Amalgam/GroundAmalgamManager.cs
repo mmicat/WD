@@ -34,6 +34,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private Transform _ledgeTransform;
         [SerializeField]
         private Transform _roofTransform;
+        [SerializeField]
+        private Transform _obstacleTransform;
         [SerializeField, Tooltip("The Amount of time (in seconds) to pause after an obstacle is encounter")]
         private float _patrolStopWaitTime = 0f; 
 
@@ -72,6 +74,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         public bool IsRoofed => Physics2D.BoxCast(_roofTransform.position, new Vector2(_baseStats.RoofCheckX, _baseStats.RoofCheckY),
             0f, Vector2.up, _baseStats.RoofCheckDist, _baseStats.GroundLayer);
+
+        public bool IsBlocked => Physics2D.BoxCast(_obstacleTransform.position, new Vector2(_baseStats.ObstacleCheckX, _baseStats.ObstacleCheckY),
+            0f, Vector2.up, _baseStats.ObstacleCheckDist, _baseStats.GroundLayer);
         #endregion
 
         #region Overrides

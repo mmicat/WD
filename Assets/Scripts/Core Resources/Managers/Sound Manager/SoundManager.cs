@@ -208,6 +208,14 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             }
         }
 
+        // Need to get access to the ambience track first
+        public void PlayAmbientSound(string Event)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Internal Methods
         private void PlayBGInternal(AudioSource source, AudioClip clip)
         {
             if (source == null) return;
@@ -280,12 +288,6 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             }
 
             _BgmMixer.DOSetFloat(exposedParamNew, 0, 3);
-        }
-
-        // Need to get access to the ambience track first
-        public void PlayAmbience(string Event)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
