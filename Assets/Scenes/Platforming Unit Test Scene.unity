@@ -1242,7 +1242,7 @@ Transform:
   m_GameObject: {fileID: 683913018}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.07, y: 6.91, z: 0}
+  m_LocalPosition: {x: 20.19, y: 6.91, z: 0}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1277,8 +1277,10 @@ MonoBehaviour:
   _obstacleTransform: {fileID: 285124913}
   _patrolStopWaitTime: 1.5
   _patrolLineGuideSize: 0.16
-  _leftTravelDistance: 11.43
-  _rightTravelDistance: 3
+  _leftTravelDistance: 5
+  _rightTravelDistance: 5
+  dist_Debug: 0
+  _charFacingRight_Debug: 0
   _groundRaycastDims: 1
   _ledgeRaycastDims: 1
   _roofRaycastDims: 1

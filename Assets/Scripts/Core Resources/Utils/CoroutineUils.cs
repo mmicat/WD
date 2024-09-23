@@ -14,13 +14,5 @@ namespace WitchDoctor.Utils
 
             onCompleted?.Invoke(handle.asset as T);
         }
-
-        public static void CancelCoroutine(this Coroutine coroutine)
-        {
-            if (coroutine == null) return;
-
-            CancelCoroutine(coroutine);
-            coroutine = null;
-        }
     }
 }

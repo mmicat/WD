@@ -9,7 +9,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam
     {
         public bool alert;
         public bool walking;
-        public bool flipping;
+        public bool blockedByObstacle;
         public bool jumping;
         public bool dashing;
         public bool dashRefreshed;

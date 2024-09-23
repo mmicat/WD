@@ -182,6 +182,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         protected float _visionConeRefreshTime = 1f;
         [SerializeField, Range(0, 10)]
         protected int _alertMaxSteps;
+        protected Transform _playerTransform;
 
         protected override void InitCharacter()
         {

@@ -54,7 +54,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
         private bool _isAirborne = true;
+        private bool _prevAirborneCheck = true;
         private bool _flipStarted = false;
+        [SerializeField]
+        private float dist_Debug;
+        [SerializeField]
+        private bool _charFacingRight_Debug;
 
         private Coroutine _flipCoroutine;
         private Coroutine _playerDetectionCoroutine;
@@ -141,10 +146,28 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         {
             _isAirborne = !IsGrounded;
 
+            if (_prevAirborneCheck != _isAirborne) // gotta check the difference for certain actions
+            {
+                if (!_isAirborne)
+                {
+                    // Setup patrol distances
+                    _referencePosition = transform.position;
+                }
+            }
+
+            _prevAirborneCheck = _isAirborne;
+            float dist = transform.position.x - _referencePosition.x;
+            
+            // dist_Debug = transform.position.x - _referencePosition.x;
+            // _charFacingRight_Debug = CharacterRenderFacingRight;
+
             if (!_isAirborne)
             {
-                _amalgamStates.flipping = IsBlocked || IsNextToLedge;
-                _amalgamStates.walking = !_amalgamStates.flipping;
+                _amalgamStates.blockedByObstacle = 
+                    (dist <= -_leftTravelDistance && !CharacterRenderFacingRight) || 
+                    (dist >= _rightTravelDistance && CharacterRenderFacingRight) || 
+                    IsBlocked || IsNextToLedge;
+                _amalgamStates.walking = !_amalgamStates.blockedByObstacle;
             }
         }
 
@@ -217,12 +240,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private void Update()
         {
             UpdateAmalgamStates();
+            LookAtPlayer();
         }
 
         private void FixedUpdate()
         {
             Walk();
-            CheckObstacles();
+            ObstacleCheck();
         }
         #endregion
 
@@ -244,13 +268,19 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             }
         }
 
-        private void CheckObstacles()
+        private void ObstacleCheck()
         {
-            if (_amalgamStates.flipping && !_flipStarted)
+            if (_amalgamStates.blockedByObstacle && !_flipStarted)
             {
                 if (_flipCoroutine != null)
                 {
                     StopCoroutine(_flipCoroutine);
+                }
+
+                if (_amalgamStates.alert)
+                {
+                    _amalgamStates.walking = false;
+                    return;
                 }
 
                 _flipCoroutine = StartCoroutine(ObstacleCoroutine());
@@ -284,6 +314,21 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         #endregion
 
         #region Utils
+        private void LookAtPlayer()
+        {
+            if (_amalgamStates.alert)
+            {
+                float xDistFromPlayer = (_playerTransform == null ? 0 : _playerTransform.position.x - transform.position.x);
+                bool playerBehindAmalgam = (xDistFromPlayer < 0 && CharacterRenderFacingRight) ||
+                    (xDistFromPlayer > 0 && !CharacterRenderFacingRight);
+
+                if (playerBehindAmalgam)
+                {
+                    Flip();
+                }
+            }
+        }
+
         private IEnumerator CheckForPlayer()
         {
             int alertCounter = 0;
@@ -301,7 +346,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                         bool inVisionCone = angle < _viewAngle / 2;
                         _amalgamStates.alert = inFront && inVisionCone;
 
-                        if (_amalgamStates.alert) alertCounter = 0;
+                        if (_amalgamStates.alert)
+                        {
+                            alertCounter = 0;
+                            _playerTransform = colliders[i].transform;
+                        }
                     }
                 }
                 else if (_amalgamStates.alert)
@@ -310,6 +359,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                     if (alertCounter > _alertMaxSteps)
                     {
                         _amalgamStates.alert = false;
+                        _playerTransform = null;
                         alertCounter = 0;
                     }
                 }
@@ -363,7 +413,6 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             mesh.RecalculateNormals();
 
             _visionConeMesh = mesh;
-            // _visionCone.GetComponent<MeshFilter>().mesh = mesh;
             return mesh;
         }
         #endregion
