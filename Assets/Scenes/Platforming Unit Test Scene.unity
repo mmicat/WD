@@ -1187,7 +1187,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &683913020
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1274,14 +1274,15 @@ MonoBehaviour:
   _groundTransform: {fileID: 563989606}
   _ledgeTransform: {fileID: 1222562580}
   _roofTransform: {fileID: 2013482557}
-  _obstacleTransform: {fileID: 0}
-  _patrolStopWaitTime: 0
+  _obstacleTransform: {fileID: 285124913}
+  _patrolStopWaitTime: 1.5
   _patrolLineGuideSize: 0.16
   _leftTravelDistance: 11.43
   _rightTravelDistance: 3
   _groundRaycastDims: 1
   _ledgeRaycastDims: 1
   _roofRaycastDims: 1
+  _obstacleRaycastDims: 1
   _displayPatrolLines: 1
 --- !u!1 &744810411
 GameObject:
@@ -1551,7 +1552,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &876386274
 MonoBehaviour:
   m_ObjectHideFlags: 0

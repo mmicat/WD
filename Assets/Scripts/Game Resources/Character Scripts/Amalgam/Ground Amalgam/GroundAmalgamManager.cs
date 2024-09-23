@@ -54,6 +54,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
         private bool _isAirborne = true;
+        private bool _flipStarted = false;
 
         private Coroutine _flipCoroutine;
         private Coroutine _playerDetectionCoroutine;
@@ -82,6 +83,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         #region Overrides
         protected override void InitCharacter()
         {
+            _rb = GetComponent<Rigidbody2D>();
+
             _maxHealth = _baseStats.BaseHealth;
             _contactDamage = _baseStats.ContactDamage;
             _rangedAttackDamage = _baseStats.BaseAttackDamage;
@@ -136,13 +139,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         protected override void UpdateAmalgamStates()
         {
-            if (IsGrounded)
+            _isAirborne = !IsGrounded;
+
+            if (!_isAirborne)
             {
-                _isAirborne = false;
-            }
-            else
-            {
-                _isAirborne = true;
+                _amalgamStates.flipping = IsBlocked || IsNextToLedge;
+                _amalgamStates.walking = !_amalgamStates.flipping;
             }
         }
 
@@ -202,7 +204,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
             if (_obstacleRaycastDims)
             {
-
+                Vector3 centerPos = _obstacleTransform.position + (Vector3.up * _baseStats.ObstacleCheckDist);
+                Vector3 cubeSize = new Vector3(_baseStats.ObstacleCheckX, _baseStats.ObstacleCheckY, 0f);
+                Gizmos.DrawLine(_obstacleTransform.position, centerPos);
+                Gizmos.DrawWireCube(centerPos, cubeSize);
             }
 #endif
         }
@@ -213,32 +218,68 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         {
             UpdateAmalgamStates();
         }
+
+        private void FixedUpdate()
+        {
+            Walk();
+            CheckObstacles();
+        }
         #endregion
 
         #region Movement
         private void Walk()
         {
-            if (_amalgamStates.walking)
+            if (!_isAirborne)
             {
-                float dir = CharacterRenderFacingRight ? 1f : -1f;
-                _rb.velocity = new Vector2(dir * _baseStats.WalkSpeed, _rb.velocity.y);
+                if (_amalgamStates.walking)
+                {
+                    float dir = CharacterRenderFacingRight ? 1f : -1f;
+                    _rb.velocity = new Vector2(dir * _baseStats.WalkSpeed, _rb.velocity.y);
 
 
-                // _animator.SetBool("Walking", _playerStates.walking);
+                    // _animator.SetBool("Walking", _playerStates.walking);
+                }
+                else
+                    _rb.velocity = Vector3.zero;
+            }
+        }
+
+        private void CheckObstacles()
+        {
+            if (_amalgamStates.flipping && !_flipStarted)
+            {
+                if (_flipCoroutine != null)
+                {
+                    StopCoroutine(_flipCoroutine);
+                }
+
+                _flipCoroutine = StartCoroutine(ObstacleCoroutine());
             }
         }
 
         private IEnumerator ObstacleCoroutine()
         {
-            _amalgamStates.walking = false;           
+            _flipStarted = true;
             yield return new WaitForSeconds(_patrolStopWaitTime);
             Flip();
-            _amalgamStates.walking = true;
+            _flipStarted = false;
         }
 
         private void Flip()
         {
-
+            var orientation = CharacterRenderFacingRight;
+            if (!orientation)
+            {
+                var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
+                _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                // _playerCameraManager.FlipCameraFollow();
+            }
+            else if (orientation)
+            {
+                var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
+                _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                // _playerCameraManager.FlipCameraFollow();
+            }
         }
         #endregion
 

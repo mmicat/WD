@@ -15,7 +15,7 @@ MonoBehaviour:
   BaseHealth: 100
   BaseAttackDamage: 15
   ContactDamage: 10
-  WalkSpeed: 25
+  WalkSpeed: 11
   GroundCheckDist: 0.24
   GroundCheckY: 0.3
   GroundCheckX: 1.73
@@ -28,6 +28,9 @@ MonoBehaviour:
   LedgeCheckDist: 0.39
   LedgeCheckY: 2.57
   LedgeCheckX: 0.35
+  ObstacleCheckDist: 0.29
+  ObstacleCheckX: 0.33
+  ObstacleCheckY: 2.04
   AmalgamAttackableLayers:
     serializedVersion: 2
     m_Bits: 128
