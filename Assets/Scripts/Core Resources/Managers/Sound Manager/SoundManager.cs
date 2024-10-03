@@ -7,6 +7,8 @@ using DG.Tweening;
 using WitchDoctor.Utils;
 using WitchDoctor.CoreResources.Utils.Singleton;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
+//using WitchDoctor.Managers.InputManagement;
+//using UnityEngine.InputSystem;
 
 namespace WitchDoctor.CoreResources.Managers.GeneralUtils
 {
@@ -22,26 +24,38 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
     public enum BackgroundSounds
     {
         None = 0,
-        MainMenu = 1
+        MainMenu = 1,
+        BGM1 = 2,
     }
 
-    public class SoundManager : DestroyableMonoSingleton<SoundManager>
+    public enum AmbientSounds
+    {
+        None = 0,
+        Cave = 1,
+        Rain = 2,
+    }
+
+    public class SoundManager : MonoSingleton<SoundManager>
     {
         [Header("Audio List"), SerializeField]
         private AudioList _audioList;
 
         [Header("Mixers"), SerializeField]
         private AudioMixer _primaryMixer;
-        [SerializeField]
-        private AudioMixer _BgmMixer;
+        // [SerializeField]
+        // private AudioMixer _bgmMixer;
+        
 
         [Header("Audio Sources"), SerializeField]
         private AudioSource[] _oneShotSources = new AudioSource[2];
         [SerializeField]
-        private AudioSource[] _BgmSource = new AudioSource[2];
+        private AudioSource[] _bgmSources = new AudioSource[2];
+        [SerializeField]
+        private AudioSource[] _ambientSources = new AudioSource[2];
 
         private Dictionary<OneShotSounds, AudioClip> _oneShotSoundMap;
         private Dictionary<BackgroundSounds, AudioClip> _BGMSoundMap;
+        private Dictionary<AmbientSounds, AudioClip> _AmbientSoundsMap;
         private BackgroundSounds _currentlyPlayingBgm = BackgroundSounds.None;
         private AudioSource _currentlyPlayingBGMSource = null;
 
@@ -85,7 +99,8 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
 
             _BGMSoundMap = new Dictionary<BackgroundSounds, AudioClip>()
             {
-                { BackgroundSounds.MainMenu, _audioList.MainMenu }
+                { BackgroundSounds.MainMenu, _audioList.MainMenu },
+                { BackgroundSounds.BGM1, _audioList.BGM1 },
             };
         }
 
@@ -137,7 +152,7 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             currentValue /= 10;
             if (currentValue <= 0)
                 currentValue = 0.0001f;
-            _primaryMixer.SetFloat("Ambience", ConversionUtils.ConvertFloatToLog(currentValue));
+            _primaryMixer.SetFloat("Ambient", ConversionUtils.ConvertFloatToLog(currentValue));
         }
         #endregion
 
@@ -154,10 +169,10 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             }
 
             // at a time only one music can be played as BG
-            if (!_BgmSource.Any((x) => x.isPlaying))
+            if (!_bgmSources.Any((x) => x.isPlaying))
             {
                 _currentlyPlayingBgm = soundType;
-                PlayBGInternal(_BgmSource[0], selClip);
+                PlayBGInternal(_bgmSources[0], selClip);
             }
             else
             {
@@ -171,7 +186,7 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
         {
             _currentlyPlayingBgm = BackgroundSounds.None;
             _currentlyPlayingBGMSource = null;
-            foreach (var source in _BgmSource)
+            foreach (var source in _bgmSources)
             {
                 StopBGInternal(source);
             }
@@ -244,9 +259,9 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             }
 
 
-            for (int i = 0; i < _BgmSource.Length; i++)
+            for (int i = 0; i < _bgmSources.Length; i++)
             {
-                if (_BgmSource[i].isPlaying)
+                if (_bgmSources[i].isPlaying)
                 {
                     if (i == 0)
                     {
@@ -266,28 +281,28 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             _currentlyPlayingBgm = soundType;
             var prevSource = _currentlyPlayingBGMSource;
 
-            _BgmMixer.DOSetFloat(exposedParamPrev, -80, 3).onComplete += () =>
+            _primaryMixer.DOSetFloat(exposedParamPrev, -80, 3).onComplete += () =>
             {
                 StopBGInternal(prevSource);
-                _BgmMixer.SetFloat(exposedParamPrev, 0);
+                _primaryMixer.SetFloat(exposedParamPrev, 0);
             };
 
-            _BgmMixer.SetFloat(exposedParamNew, -80);
+            _primaryMixer.SetFloat(exposedParamNew, -80);
 
             try
             {
-                PlayBGInternal(_BgmSource.First((x) => !x.isPlaying), selClip);
+                PlayBGInternal(_bgmSources.First((x) => !x.isPlaying), selClip);
             }
             catch
             {
-                foreach (var source in _BgmSource)
+                foreach (var source in _bgmSources)
                 {
                     source.Stop();
                 }
-                PlayBGInternal(_BgmSource[0], selClip);
+                PlayBGInternal(_bgmSources[0], selClip);
             }
 
-            _BgmMixer.DOSetFloat(exposedParamNew, 0, 3);
+            _primaryMixer.DOSetFloat(exposedParamNew, 0, 3);
         }
         #endregion
 
@@ -301,7 +316,18 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
 
             _audioInitialized = true;
             PlayBG(BackgroundSounds.MainMenu);
+
+            // InputManager.Player.Jump.performed += SampTransitionFunction;
         }
+
+        //private void SampTransitionFunction(InputAction.CallbackContext obj)
+        //{
+        //    if (obj.performed)
+        //    {
+        //        BackgroundSounds soundToPlay = _currentlyPlayingBgm == BackgroundSounds.MainMenu ? BackgroundSounds.BGM1 : BackgroundSounds.MainMenu;
+        //        PlayBG(soundToPlay);
+        //    }
+        //}
 
         public void SaveSoundSettingsToPlayerPrefs()
         {

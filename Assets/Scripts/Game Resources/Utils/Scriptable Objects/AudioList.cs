@@ -14,5 +14,6 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
 
         [Header("Background Sounds")]
         public AudioClip MainMenu;
+        public AudioClip BGM1;
     }
 }
