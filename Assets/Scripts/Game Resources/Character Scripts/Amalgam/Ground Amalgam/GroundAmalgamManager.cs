@@ -36,7 +36,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private Transform _roofTransform;
         [SerializeField]
         private Transform _obstacleTransform;
-        [SerializeField, Tooltip("The Amount of time (in seconds) to pause after an obstacle is encounter")]
+        [SerializeField, Tooltip("The Amount of time (in seconds) to pause after an obstacle is encountered")]
         private float _patrolStopWaitTime = 0f; 
 
         [Space(5)]
@@ -193,7 +193,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 if (_visionConeMesh == null)
                 {
                 }
-                    var mesh = GetVisionConeMesh();
+                var mesh = GetVisionConeMesh();
                 
                 float zRot = CharacterRenderFacingRight ? 0 : 180;
                 Quaternion rotation = Quaternion.Euler(0f, 0f, zRot);

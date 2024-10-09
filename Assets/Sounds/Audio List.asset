@@ -17,4 +17,5 @@ MonoBehaviour:
   GameWin: {fileID: 0}
   GameLoss: {fileID: 0}
   Timer: {fileID: 0}
-  MainMenu: {fileID: 0}
+  MainMenu: {fileID: 8300000, guid: c071e2346416bc24590420e2a09a0dac, type: 3}
+  BGM1: {fileID: 8300000, guid: d2da1e5fb806a0245898477ccff80528, type: 3}

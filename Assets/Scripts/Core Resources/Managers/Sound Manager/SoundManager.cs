@@ -7,8 +7,8 @@ using DG.Tweening;
 using WitchDoctor.Utils;
 using WitchDoctor.CoreResources.Utils.Singleton;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
-//using WitchDoctor.Managers.InputManagement;
-//using UnityEngine.InputSystem;
+using WitchDoctor.Managers.InputManagement;
+using UnityEngine.InputSystem;
 
 namespace WitchDoctor.CoreResources.Managers.GeneralUtils
 {
@@ -315,7 +315,7 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             }
 
             _audioInitialized = true;
-            PlayBG(BackgroundSounds.MainMenu);
+            // PlayBG(BackgroundSounds.MainMenu);
 
             // InputManager.Player.Jump.performed += SampTransitionFunction;
         }
