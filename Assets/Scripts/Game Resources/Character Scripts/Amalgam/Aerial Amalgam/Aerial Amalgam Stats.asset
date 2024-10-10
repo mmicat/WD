@@ -15,7 +15,7 @@ MonoBehaviour:
   BaseHealth: 100
   BaseAttackDamage: 15
   ContactDamage: 10
-  WalkSpeed: 25
+  MovementSpeed: 7.5
   GroundCheckDist: 0.2
   GroundCheckY: 0.2
   GroundCheckX: 1

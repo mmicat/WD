@@ -258,7 +258,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 if (_amalgamStates.walking)
                 {
                     float dir = CharacterRenderFacingRight ? 1f : -1f;
-                    _rb.velocity = new Vector2(dir * _baseStats.WalkSpeed, _rb.velocity.y);
+                    _rb.velocity = new Vector2(dir * _baseStats.MovementSpeed, _rb.velocity.y);
 
 
                     // _animator.SetBool("Walking", _playerStates.walking);
@@ -302,13 +302,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             {
                 var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
-                // _playerCameraManager.FlipCameraFollow();
             }
             else if (orientation)
             {
                 var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
-                // _playerCameraManager.FlipCameraFollow();
             }
         }
         #endregion

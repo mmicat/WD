@@ -15,7 +15,7 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         [Space(5)]
 
         [Header("X Axis Movement")]
-        public float WalkSpeed = 25f;
+        public float MovementSpeed = 25f;
 
         [Space(5)]
 
