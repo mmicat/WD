@@ -14,8 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PositiveButtonClick: {fileID: 0}
   NegativeButtonClick: {fileID: 0}
-  GameWin: {fileID: 0}
+  GameWin: {fileID: 8300000, guid: 13e9f6453e88d9c45a91a89d9f74b882, type: 3}
   GameLoss: {fileID: 0}
   Timer: {fileID: 0}
-  MainMenu: {fileID: 8300000, guid: c071e2346416bc24590420e2a09a0dac, type: 3}
-  BGM1: {fileID: 8300000, guid: d2da1e5fb806a0245898477ccff80528, type: 3}
+  SwordSlash: {fileID: 8300000, guid: cd43121974eda544292341114751e9b1, type: 3}
+  SwordSlashMagic: {fileID: 8300000, guid: 4c5c323e41ccba941b9773deed2d234b, type: 3}
+  MainMenu: {fileID: 8300000, guid: f6d670eee8a9be348bcbf7d17f84cf26, type: 3}
+  BGM1: {fileID: 8300000, guid: 5b73d814a540ae64e8736a58f39f7772, type: 3}
+  None: {fileID: 0}
+  Cave: {fileID: 8300000, guid: d0977c6d1ab6a074c975549376da70da, type: 3}
+  Rain: {fileID: 8300000, guid: 7607a471c39ab84428848748ec06acbb, type: 3}

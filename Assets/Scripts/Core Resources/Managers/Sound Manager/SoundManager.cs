@@ -85,7 +85,7 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
             base.InitSingleton();
 
             _audioInitialized = false;
-            _currentlyPlayingBgm = BackgroundSounds.None;
+            _currentlyPlayingBgm = BackgroundSounds.MainMenu;
             _currentlyPlayingBGMSource = null;
 
             _oneShotSoundMap = new Dictionary<OneShotSounds, AudioClip>()

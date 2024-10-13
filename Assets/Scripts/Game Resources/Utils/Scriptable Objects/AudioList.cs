@@ -10,10 +10,17 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
         public AudioClip NegativeButtonClick,
             GameWin,
             GameLoss,
-            Timer;
+            Timer,
+            SwordSlash,
+            SwordSlashMagic;
 
         [Header("Background Sounds")]
         public AudioClip MainMenu;
         public AudioClip BGM1;
+
+        [Header("Ambient Sounds")]
+        public AudioClip None;
+        public AudioClip Cave;
+        public AudioClip Rain;
     }
 }
