@@ -5,6 +5,9 @@ using WitchDoctor.Managers.InputManagement;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using WitchDoctor.GameResources.CharacterScripts.Player.AnimationEvents;
 
+//Namespace for SoundManger
+using WitchDoctor.CoreResources.Managers.GeneralUtils;
+
 namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 {
     public enum PrimaryAttackType
@@ -57,6 +60,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _primaryChargedAttackHitbox;
 
         #region Overrides
+
+        //reference to SoundManager
+        private SoundManager _soundManager;
+
         public override void InitManager()
         {
             base.InitManager();
@@ -68,6 +75,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _animationEvents = InitializationContext.PlayerAnimationEvents;
             _chargeFXAnimationEvents = InitializationContext.ChargeFXAnimationEvents;
             _playerMovementManager = InitializationContext.PlayerMovementManager;
+        
+            //reference to SoundManager
+            _soundManager = SoundManager.Instance;
 
             _inputWaitingCoroutine = StartCoroutine(AddListeners());
         }
@@ -219,12 +229,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 SetCurrentAttack(PrimaryAttackType.ChargedAttack);
                 _primaryAttackCharged = false;
 
+                _soundManager.PlayOneShot(OneShotSounds.SwordSlashMagic, false);    
+                //trigger for sound sfx for Slash Sound for Sword
+
                 SetCharging();
             }
             else
             {
                 SetCurrentAttack((_currAttack == (PrimaryAttackType)3 ? (PrimaryAttackType)1 : _currAttack + 1));
                 // Debug.Log($"Standard Attack: {_currAttack}");
+
+                _soundManager.PlayOneShot(OneShotSounds.SwordSlash, false);
+                //trigger for sound sfx for Slash Sound for Sword
             }
 
             // _animator.SetInteger("Attack", (int)_currAttack);

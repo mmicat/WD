@@ -19,6 +19,8 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
         GameWin = 2,
         GameLoss = 3,
         Timer = 4,
+        SwordSlash = 5,
+        SwordSlashMagic = 6,
     }
 
     public enum BackgroundSounds
@@ -94,7 +96,9 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
                 { OneShotSounds.NegativeButtonClick, _audioList.NegativeButtonClick },
                 { OneShotSounds.GameWin, _audioList.GameWin },
                 { OneShotSounds.GameLoss, _audioList.GameLoss },
-                { OneShotSounds.Timer, _audioList.Timer }
+                { OneShotSounds.Timer, _audioList.Timer },
+                { OneShotSounds.SwordSlash, _audioList.SwordSlash },
+                { OneShotSounds.SwordSlashMagic, _audioList.SwordSlashMagic },
             };
 
             _BGMSoundMap = new Dictionary<BackgroundSounds, AudioClip>()
