@@ -19,6 +19,9 @@ MonoBehaviour:
   Timer: {fileID: 0}
   SwordSlash: {fileID: 8300000, guid: cd43121974eda544292341114751e9b1, type: 3}
   SwordSlashMagic: {fileID: 8300000, guid: 4c5c323e41ccba941b9773deed2d234b, type: 3}
+  WalkWetStone: {fileID: 8300000, guid: 131017664c71f224f99a85c0b159fb94, type: 3}
+  WalkGravel: {fileID: 8300000, guid: 0778b41f73aac2b40ade56350356cc99, type: 3}
+  WalkGrass: {fileID: 8300000, guid: 58c48f443f842e54da1b154eeb1b061a, type: 3}
   MainMenu: {fileID: 8300000, guid: f6d670eee8a9be348bcbf7d17f84cf26, type: 3}
   BGM1: {fileID: 8300000, guid: 5b73d814a540ae64e8736a58f39f7772, type: 3}
   None: {fileID: 0}

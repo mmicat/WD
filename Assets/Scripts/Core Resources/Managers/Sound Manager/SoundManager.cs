@@ -21,6 +21,9 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
         Timer = 4,
         SwordSlash = 5,
         SwordSlashMagic = 6,
+        WalkWetStone = 7,
+        WalkGravel = 8,
+        WalkGrass = 9,
     }
 
     public enum BackgroundSounds
@@ -99,6 +102,9 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
                 { OneShotSounds.Timer, _audioList.Timer },
                 { OneShotSounds.SwordSlash, _audioList.SwordSlash },
                 { OneShotSounds.SwordSlashMagic, _audioList.SwordSlashMagic },
+                { OneShotSounds.WalkWetStone, _audioList.WalkWetStone },
+                { OneShotSounds.WalkGravel, _audioList.WalkGravel },
+                { OneShotSounds.WalkGrass, _audioList.WalkGrass },
             };
 
             _BGMSoundMap = new Dictionary<BackgroundSounds, AudioClip>()

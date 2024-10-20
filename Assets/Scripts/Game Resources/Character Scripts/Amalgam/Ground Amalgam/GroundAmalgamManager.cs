@@ -132,12 +132,16 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         {
             base.OnDamageTaken(damage);
 
+            //Add sfx for enemy taking dmg
+
             Debug.Log($"Amalgam Took Damage: {damage}.\nCurrent Health: {CurrHealth}");
         }
 
         protected override void OnDeath()
         {
             base.OnDeath();
+
+            //Add sfx for enemy death
 
             Debug.Log("Amalgam Died");
         }

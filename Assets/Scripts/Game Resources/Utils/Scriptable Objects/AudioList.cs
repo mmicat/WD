@@ -12,7 +12,10 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
             GameLoss,
             Timer,
             SwordSlash,
-            SwordSlashMagic;
+            SwordSlashMagic,
+            WalkWetStone,
+            WalkGravel,
+            WalkGrass;
 
         [Header("Background Sounds")]
         public AudioClip MainMenu;
