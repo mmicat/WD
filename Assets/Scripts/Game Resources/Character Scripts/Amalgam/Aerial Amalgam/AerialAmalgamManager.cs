@@ -86,6 +86,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
             GetVisionConeMesh();
 
+
             if (_amalgamStates == null) _amalgamStates = new AmalgamStates();
             _amalgamStates.Reset();
 
@@ -321,7 +322,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private void CheckForFlip()
         {
             var currVelocity = _pathfinder.velocity;
-            Debug.Log(currVelocity);
+            // Debug.Log(currVelocity);
             if (Mathf.Abs(currVelocity.x) > _flipThreshold)
             {
                 if ((currVelocity.x < 0 && CharacterRenderFacingRight) || 

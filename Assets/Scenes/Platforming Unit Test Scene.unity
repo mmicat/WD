@@ -1173,6 +1173,7 @@ MonoBehaviour:
   - {x: -9.7, y: 2.96}
   _waypointRadiusDebug: 0.34
   _patrolStopWaitTime: 1.5
+  _flipThreshold: 0.5
   _groundRaycastDims: 0
   _ledgeRaycastDims: 0
   _roofRaycastDims: 0
@@ -1532,7 +1533,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 10
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

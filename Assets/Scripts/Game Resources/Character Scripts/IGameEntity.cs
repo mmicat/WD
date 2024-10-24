@@ -11,7 +11,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         public int MaxHealth { get; }
         public int CurrHealth { get; }
         public int ContactDamage { get; }
-        public void TakeDamage(int damage);
+        public void TakeDamage(int damage, Transform attacker);
     }
 
     public abstract class GameEntity : MonoBehaviour, IGameEntity
@@ -76,9 +76,9 @@ namespace WitchDoctor.GameResources.CharacterScripts
         }
         #endregion
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, Transform attacker)
         {
-            OnDamageTaken(damage);
+            OnDamageTaken(damage, attacker);
         }
 
         #region Unity Methods
@@ -110,7 +110,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
             DeInitializeManagers();
         }
 
-        protected virtual void OnDamageTaken(int damage)
+        protected virtual void OnDamageTaken(int damage, Transform attacker)
         {
             if (_invincible) return;
 
@@ -188,6 +188,7 @@ namespace WitchDoctor.GameResources.CharacterScripts
         {
             base.InitCharacter();
             _isPlayer = false;
+            _currHealth = _maxHealth;
         }
 
         protected override void DeInitCharacter()

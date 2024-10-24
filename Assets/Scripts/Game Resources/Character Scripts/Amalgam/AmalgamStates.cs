@@ -20,10 +20,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam
         public bool recoilingY;
         public bool casting;
         public bool castReleased;
+        public bool hurt;
         public bool dead;
 
         #region State Properties
-        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack && !recoilingX && !recoilingY && !dead;
+        public bool IsIdle => !walking && !dashing && !jumping && !attacking && !chargingAttack && !recoilingX && !recoilingY && !hurt && !dead;
         public bool CanAttack => !jumping && (walking || dashing || IsIdle || attacking);
         public bool IsMoving => walking || dashing || jumping;
         public bool IsRecoiling => recoilingX || recoilingY;
@@ -44,6 +45,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam
             recoilingY = false;
             casting = false;
             castReleased = false;
+            hurt = false;
             dead = false;
         }
     }

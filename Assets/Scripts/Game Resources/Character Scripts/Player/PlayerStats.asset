@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472ed017c5aa9ed47b50f638f7efe840, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
-  BaseHealth: 30
-  BaseAttack: 15
+  BaseHealth: 100
+  BaseAttackDamage: 15
   WalkSpeed: 15
   JumpSpeed: 45
   MaxFallSpeed: 45
@@ -55,8 +55,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   recoilSpeedDecayConstant: 1
-  recoilXSteps: 8
+  recoilXSteps: 19
   recoilYSteps: 10
-  recoilXSpeed: 38
+  recoilXSpeed: 55
   recoilYSpeed: 45
-  recoilGravityScale: 10
+  recoilGravityScale: 2

@@ -27,14 +27,14 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private PlayerCameraManager _playerCameraManager;
         #endregion
 
-        private float defaultGravity;
-        private int stepsXRecoiled = 0;
-        private int stepsYRecoiled = 0;
-        private int stepsJumped = 0;
-        private bool animateRecoil = false;
+        private float _defaultGravity;
+        private int _stepsXRecoiled = 0;
+        private int _stepsYRecoiled = 0;
+        private int _stepsJumped = 0;
+        private bool _animateRecoil = false;
         private bool _blockInput = false;
 
-        private Vector2 movement;
+        private Vector2 _movement;
         private Vector2 _damageDir;
         private Vector2 _dashDir;
 
@@ -83,7 +83,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             _playerStates = InitializationContext.PlayerStates;
             _playerCameraManager = InitializationContext.PlayerCameraManager;
 
-            defaultGravity = _rb.gravityScale;
+            _defaultGravity = _rb.gravityScale;
             _inputWaitingCoroutine = StartCoroutine(AddListeners()); // We're waiting for the input system to initialize to avoid race conditions
         }
 
@@ -159,13 +159,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private void ResetManager()
         {
             InterruptMovementActions(true, true);
-            _rb.gravityScale = defaultGravity;
-            stepsXRecoiled = 0;
-            stepsYRecoiled = 0;
-            stepsJumped = 0;
-            animateRecoil = false;
+            _rb.gravityScale = _defaultGravity;
+            _stepsXRecoiled = 0;
+            _stepsYRecoiled = 0;
+            _stepsJumped = 0;
+            _animateRecoil = false;
             _blockInput = false;
-            movement = Vector2.zero;
+            _movement = Vector2.zero;
             _damageDir = Vector2.zero;
             _dashDir = Vector2.zero;
 
@@ -179,7 +179,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 StopCoroutine(_dashLedgeCancelCoroutine);
                 _dashLedgeCancelCoroutine = null;
             }
-    }
+        }
 
         #region Movement Scripts
         /// <summary>
@@ -217,13 +217,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         private void Flip()
         {
             var orientation = CharacterRenderFacingRight;
-            if (movement.x > 0 && !orientation)
+            if (_movement.x > 0 && !orientation)
             {
                 var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
                 _playerCameraManager.FlipCameraFollow();
             }
-            else if (movement.x < 0 && orientation)
+            else if (_movement.x < 0 && orientation)
             {
                 var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
@@ -239,10 +239,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             if (_playerStates.jumping)
             {
-                if (stepsJumped < _baseStats.JumpSteps && !IsRoofed)
+                if (_stepsJumped < _baseStats.JumpSteps && !IsRoofed)
                 {
                     _rb.velocity = new Vector2(_rb.velocity.x, _baseStats.JumpSpeed);
-                    stepsJumped++;
+                    _stepsJumped++;
                 }
                 else
                 {
@@ -258,7 +258,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         /// </summary>
         private void StopJumpQuick()
         {
-            stepsJumped = 0;
+            _stepsJumped = 0;
             _playerStates.jumping = false;
             _rb.velocity = new Vector2(_rb.velocity.x, 0f);
         }
@@ -269,7 +269,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         /// </summary>
         private void StopJumpSlow()
         {
-            stepsJumped = 0;
+            _stepsJumped = 0;
             _playerStates.jumping = false;
         }
 
@@ -344,7 +344,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 if (cancelActions)
                     InterruptMovementActions(true, true);
 
-                animateRecoil = runAnimation;
+                _animateRecoil = runAnimation;
 
                 var finalVelocity = Vector2.zero;
 
@@ -375,12 +375,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
                 }
                 
-                var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(stepsYRecoiled, stepsXRecoiled));
+                var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(_stepsYRecoiled, _stepsXRecoiled));
                 _rb.velocity = finalVelocity / decayFactor;
             }
             else
             {
-                _rb.gravityScale = defaultGravity;
+                _rb.gravityScale = _defaultGravity;
             }
         }
 
@@ -388,26 +388,26 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             if (!_playerStates.IsRecoiling)
             {
-                if (animateRecoil)
+                if (_animateRecoil)
                 {
                     _damageDir = Vector2.zero;
-                    animateRecoil = false;
+                    _animateRecoil = false;
                 }
 
                 return;
             }
 
-            if (_playerStates.recoilingX == true && stepsXRecoiled < _baseStats.recoilXSteps)
+            if (_playerStates.recoilingX == true && _stepsXRecoiled < _baseStats.recoilXSteps)
             {
-                stepsXRecoiled++;
+                _stepsXRecoiled++;
             }
             else
             {
                 StopRecoilX();
             }
-            if (_playerStates.recoilingY == true && stepsYRecoiled < _baseStats.recoilYSteps)
+            if (_playerStates.recoilingY == true && _stepsYRecoiled < _baseStats.recoilYSteps)
             {
-                stepsYRecoiled++;
+                _stepsYRecoiled++;
             }
             else
             {
@@ -421,13 +421,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
         private void StopRecoilX()
         {
-            stepsXRecoiled = 0;
+            _stepsXRecoiled = 0;
             _playerStates.recoilingX = false;
         }
 
         private void StopRecoilY()
         {
-            stepsYRecoiled = 0;
+            _stepsYRecoiled = 0;
             _playerStates.recoilingY = false;
         }
 
@@ -453,18 +453,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         {
             _animator.SetBool("Grounded", IsGrounded);
             _animator.SetBool("Dash", _playerStates.dashing);
-            _animator.SetBool("Recoiling", _playerStates.IsRecoiling && animateRecoil);
+            _animator.SetBool("Recoiling", _playerStates.IsRecoiling && _animateRecoil);
             _animator.SetFloat("YVelocity", _rb.velocity.y);
 
             if (InputManager.Player.Jump.WasReleasedThisFrame())
             {
-                if (stepsJumped < _baseStats.JumpSteps
-                    && stepsJumped > _baseStats.JumpThreshold
+                if (_stepsJumped < _baseStats.JumpSteps
+                    && _stepsJumped > _baseStats.JumpThreshold
                     && _playerStates.jumping)
                 {
                     StopJumpQuick();
                 }
-                else if (stepsJumped < _baseStats.JumpThreshold
+                else if (_stepsJumped < _baseStats.JumpThreshold
                     && _playerStates.jumping)
                 {
                     StopJumpSlow();
@@ -490,9 +490,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             StopDashQuick();
         }
 
-        public void ProcessEnemyCollision(Collision2D collision)
+        public void ProcessEnemyCollision(Transform collision)
         {
-            _damageDir = Vector3.Normalize(collision.transform.position - transform.position);
+            _damageDir = Vector3.Normalize(collision.position - transform.position);
             SetRecoil();
         }
         #endregion
@@ -504,8 +504,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
             if (obj.performed)
             {
-                movement.x = obj.ReadValue<Vector2>().x;
-                movement.y = obj.ReadValue<Vector2>().y;
+                _movement.x = obj.ReadValue<Vector2>().x;
+                _movement.y = obj.ReadValue<Vector2>().y;
             }
         }
 
@@ -543,7 +543,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         #region Unity Methods
         void Update()
         {
-            Walk(movement.x);
+            Walk(_movement.x);
             Recoil();
             UpdateMovementStates();
         }

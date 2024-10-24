@@ -321,7 +321,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
             {
                 // Process the seperate collisions here
                 Debug.Log($"Found Amalgam {collidersInContact[i].gameObject.name}");
-                collidersInContact[i].GetComponent<GameEntity>()?.TakeDamage(currDamage);
+                collidersInContact[i].GetComponent<GameEntity>()?.TakeDamage(currDamage, _meleeAttackCenter);
             }
         }
 

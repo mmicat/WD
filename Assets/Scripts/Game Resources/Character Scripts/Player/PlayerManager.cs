@@ -106,11 +106,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
             base.DeInitCharacter();
         }
 
-        protected override void OnDamageTaken(int damage)
+        protected override void OnDamageTaken(int damage, Transform attacker)
         {
             Debug.Log($"Damage Taken: {damage}\nCurrent Health: {_currHealth}");
+            if (!_playerStates.dead) _playerMovementManager.ProcessEnemyCollision(attacker);
 
-            base.OnDamageTaken(damage);
+            base.OnDamageTaken(damage, attacker);
         }
 
         protected override void OnDeath()
@@ -131,8 +132,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player
         {
             if (_baseStats.PlayerDamagableLayers.Contains(collision.gameObject.layer))
             {
-                TakeDamage(10); // get contact damage from IGameEntity
-                if (!_playerStates.dead) _playerMovementManager.ProcessEnemyCollision(collision);
+                TakeDamage(10, collision.transform); // get contact damage from IGameEntity
+                
             }
         }
         #endregion
