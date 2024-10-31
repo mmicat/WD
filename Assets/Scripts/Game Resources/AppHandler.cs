@@ -8,17 +8,15 @@ namespace WitchDoctor.GameResources
 {
     public class AppHandler : MonoSingleton<AppHandler>
     {
-        // Remove this later we're not going to directly reference the player manager from the app handler
-        [SerializeField] private PlayerManager _playerManager;
-
-
+        [SerializeField]
+        private GameStateMediator _mediator;
 
         #region Overrides
         public override void InitSingleton()
         {
             base.InitSingleton();
 
-            
+            _mediator.gameObject.SetActive(true);
         }
 
         public override void CleanSingleton()

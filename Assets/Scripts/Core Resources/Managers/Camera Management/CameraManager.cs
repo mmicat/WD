@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace WitchDoctor.CoreResources.Managers.CameraManagement
 {
-    public class CameraManager : MonoSingleton<CameraManager>
+    public class CameraManager : DestroyableMonoSingleton<CameraManager>
     {
         private CinemachineVirtualCamera _currentCamera;
         [SerializeField] private CinemachineVirtualCamera[] _allVirtualCameras;

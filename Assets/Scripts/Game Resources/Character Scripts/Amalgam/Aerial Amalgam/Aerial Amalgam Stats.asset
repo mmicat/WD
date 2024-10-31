@@ -15,7 +15,7 @@ MonoBehaviour:
   BaseHealth: 100
   BaseAttackDamage: 15
   ContactDamage: 10
-  MovementSpeed: 7.5
+  MovementSpeed: 6.5
   GroundCheckDist: 0.2
   GroundCheckY: 0.2
   GroundCheckX: 1
@@ -34,3 +34,12 @@ MonoBehaviour:
   AmalgamAttackableLayers:
     serializedVersion: 2
     m_Bits: 128
+  AmalgamDamagableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  recoilXSteps: 10
+  recoilYSteps: 10
+  recoilSpeedDecayConstant: 1.2
+  recoilXSpeed: 45
+  recoilYSpeed: 45
+  recoilGravityScale: 1

@@ -55,7 +55,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   recoilSpeedDecayConstant: 1
-  recoilXSteps: 19
+  recoilXSteps: 14
   recoilYSteps: 10
   recoilXSpeed: 55
   recoilYSpeed: 45

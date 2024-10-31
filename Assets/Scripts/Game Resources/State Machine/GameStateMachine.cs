@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WitchDoctor.CoreResources.StateMachine;
 
-public class GameStateMachine : MonoBehaviour
+namespace WitchDoctor.GameResources.StateMachine
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GameStateMachine : StateMachineHistory<GameStateMachine, GameState>
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    
     }
 }

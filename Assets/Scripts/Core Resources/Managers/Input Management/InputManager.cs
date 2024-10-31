@@ -17,7 +17,7 @@ namespace WitchDoctor.Managers.InputManagement
     }
 
     [RequireComponent(typeof(PlayerInput))] // PlayerInput is important for manual control switching
-    public class InputManager : MonoSingleton<InputManager>
+    public class InputManager : DestroyableMonoSingleton<InputManager>
     {
         private PlayerInput _playerInput;
         private List<InputDevice> _inputDevices;

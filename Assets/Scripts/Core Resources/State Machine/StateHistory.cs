@@ -199,7 +199,5 @@ namespace WitchDoctor.CoreResources.StateMachine
             cleanState.CleanAllStates();
             cleanState = null;
         }
-
     }
-
 }

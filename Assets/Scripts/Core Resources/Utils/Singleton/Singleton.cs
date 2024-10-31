@@ -235,12 +235,13 @@ namespace WitchDoctor.CoreResources.Utils.Singleton
         }
 
         public static bool IsInstantiated => _instance != null;
+
         #endregion
 
         #region Overrides
         public override void InitSingleton()
         {
-            if (Instance != null && GetInstanceID() != Instance.GetInstanceID())
+            if (_instance != null && GetInstanceID() != Instance.GetInstanceID())
             {
                 Destroy(gameObject);
             }

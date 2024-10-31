@@ -57,6 +57,18 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         [SerializeField]
         private float _flipThreshold = 0.5f;
 
+        [Space(5)]
+
+        [Header("Misc")]
+        [SerializeField]
+        private float _hurtRefreshSeconds = 0.8f;
+
+
+        private float _defaultGravity;
+        private int _stepsXRecoiled = 0;
+        private int _stepsYRecoiled = 0;
+        private bool _animateRecoil = false;
+        private Vector2 _damageDir;
 
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
 
@@ -86,9 +98,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
             GetVisionConeMesh();
 
-
-            if (_amalgamStates == null) _amalgamStates = new AmalgamStates();
+            _amalgamStates ??= new AmalgamStates();
             _amalgamStates.Reset();
+            ResetManager();
 
             if (_playerDetectionCoroutine != null)
             {
@@ -184,10 +196,31 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         protected override void UpdateAmalgamStates()
         {
-            if (!_amalgamStates.alert && _waypointTraversalCoroutine == null)
+            if (_waypointTraversalCoroutine == null && !_amalgamStates.alert && !_amalgamStates.dead)
             {
                 _waypointTraversalCoroutine = StartCoroutine(TraverseWaypoints());
             }
+        }
+
+        protected override void OnDamageTaken(int damage, Transform attacker)
+        {
+            base.OnDamageTaken(damage, attacker);
+
+            Debug.Log($"Amalgam Took Damage: {damage}.\nCurrent Health: {CurrHealth}");
+
+            _amalgamStates.alert = true;
+            _playerTransform = attacker;
+            _damageDir = Vector3.Normalize(attacker.position - transform.position);
+            SetRecoil();
+        }
+
+        protected override void OnDeath()
+        {
+            ResetManager();
+            Debug.Log("Amalgam Died");
+            _amalgamStates.dead = true;
+
+            base.OnDeath();
         }
         #endregion
 
@@ -195,11 +228,14 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private void Update()
         {
             UpdateAmalgamStates();
+            UpdateAnimations();
+            Recoil();
         }
 
         private void FixedUpdate()
         {
             CheckForFlip();
+            ProcessRecoil();
         }
         #endregion
 
@@ -232,9 +268,136 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 _currWaypointIndex = _currWaypointIndex == _targetPatrolPositions.Length - 1 ? 0 : _currWaypointIndex + 1;
             }
         }
+
+        private void SetRecoil()
+        {
+            if (_amalgamStates.dead)
+                return;
+
+            _amalgamStates.recoilingY = true;
+            _amalgamStates.recoilingX = true;
+
+            // StartCoroutine(SetHurtAnimation());
+        }
+
+        /// <summary>
+        /// Adds a recoil force to the player
+        /// </summary>
+        /// <param name="runAnimation">Determines whether to run associated animation</param>
+        /// <param name="cancelActions">determines whether to cancel other actions</param>
+        private void Recoil(bool runAnimation = true)
+        {
+            if (_amalgamStates.recoilingX || _amalgamStates.recoilingY)
+            {
+                //if (cancelActions)
+                //    InterruptMovementActions(true, true);
+
+                _animateRecoil = runAnimation;
+
+                var finalVelocity = Vector2.zero;
+
+                //since this is run after Walk, it takes priority, and effects momentum properly.
+                if (_amalgamStates.recoilingX)
+                {
+                    if (CharacterRenderFacingRight)
+                    {
+                        finalVelocity = new Vector2(-_baseStats.recoilXSpeed, 0);
+                    }
+                    else
+                    {
+                        finalVelocity = new Vector2(_baseStats.recoilXSpeed, 0);
+                    }
+                }
+                if (_amalgamStates.recoilingY)
+                {
+                    if (_damageDir.y < 0)
+                    {
+                        finalVelocity = new Vector2(finalVelocity.x, _baseStats.recoilYSpeed);
+                        _rb.gravityScale = _baseStats.recoilGravityScale;
+                    }
+                    else
+                    {
+                        finalVelocity = new Vector2(finalVelocity.x, -_baseStats.recoilYSpeed);
+                        _rb.gravityScale = _baseStats.recoilGravityScale;
+                    }
+
+                }
+
+                var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(_stepsYRecoiled, _stepsXRecoiled));
+                _rb.velocity = finalVelocity / decayFactor;
+            }
+            else
+            {
+                _rb.gravityScale = _defaultGravity;
+            }
+        }
+
+        private void ProcessRecoil()
+        {
+            if (!_amalgamStates.IsRecoiling)
+            {
+                if (_animateRecoil)
+                {
+                    _damageDir = Vector2.zero;
+                    _animateRecoil = false;
+                }
+
+                return;
+            }
+
+            var maxXSteps = _baseStats.recoilXSteps * Vector3.Normalize(_damageDir).x;
+            var maxYSteps = _baseStats.recoilYSteps * Vector3.Normalize(_damageDir).y;
+            if (_amalgamStates.recoilingX == true && _stepsXRecoiled < maxXSteps)
+            {
+                _stepsXRecoiled++;
+            }
+            else
+            {
+                StopRecoilX();
+            }
+            if (_amalgamStates.recoilingY == true && _stepsYRecoiled < maxYSteps)
+            {
+                _stepsYRecoiled++;
+            }
+            else
+            {
+                StopRecoilY();
+            }
+            // Flying amalgams are never grounded so we don't need this
+            //if (IsGrounded)
+            //{
+            //    StopRecoilY();
+            //}
+        }
+
+        private void StopRecoilX()
+        {
+            _stepsXRecoiled = 0;
+            _amalgamStates.recoilingX = false;
+        }
+
+        private void StopRecoilY()
+        {
+            _stepsYRecoiled = 0;
+            _amalgamStates.recoilingY = false;
+        }
         #endregion
 
         #region Utils
+        protected void UpdateAnimations()
+        {
+            _animator.SetBool("Hurt", _amalgamStates.IsRecoiling);
+        }
+
+        private void ResetManager()
+        {
+            _rb.gravityScale = _defaultGravity;
+            _stepsXRecoiled = 0;
+            _stepsYRecoiled = 0;
+            _animateRecoil = false;
+            _damageDir = Vector2.zero;
+        }
+
         private IEnumerator CheckForPlayer()
         {
             int alertCounter = 0;
@@ -270,6 +433,13 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 yield return new WaitForSeconds(_visionConeRefreshTime);
             }
         }
+
+        //private IEnumerator SetHurtAnimation()
+        //{
+        //    _amalgamStates.hurt = true;
+        //    yield return new WaitForSeconds(_hurtRefreshSeconds);
+        //    _amalgamStates.hurt = false;
+        //}
 
         private Mesh GetVisionConeMesh()
         {

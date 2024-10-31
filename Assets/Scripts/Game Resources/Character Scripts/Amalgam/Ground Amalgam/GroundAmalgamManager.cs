@@ -49,6 +49,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private float _leftTravelDistance = 3f;
         [SerializeField]
         private float _rightTravelDistance = 3f;
+
+
+        [Space(5)]
+        [Header("Misc")]
         [SerializeField]
         private float _hurtRefreshSeconds = 0.8f;
         private Vector3 _referencePosition;
@@ -266,7 +270,7 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         private void FixedUpdate()
         {
-            // Walk();
+            Walk();
             ObstacleCheck();
             ProcessRecoil();
         }

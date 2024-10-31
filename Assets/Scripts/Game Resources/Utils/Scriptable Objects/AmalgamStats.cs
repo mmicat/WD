@@ -53,9 +53,9 @@ namespace WitchDoctor.GameResources.Utils.ScriptableObjects
 
         [Header("Combat - Getting Attacked")]
         public LayerMask AmalgamDamagableLayers;
-        public int recoilSpeedDecayConstant = 3;
         public int recoilXSteps = 4;
         public int recoilYSteps = 10;
+        public float recoilSpeedDecayConstant = 3;
         public float recoilXSpeed = 45f;
         public float recoilYSpeed = 45f;
         public float recoilGravityScale = 1f;
