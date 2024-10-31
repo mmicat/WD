@@ -60,6 +60,19 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
         #endregion
 
         #region Public Methods
+        public void SetupCameraSystem(CinemachineVirtualCamera[] virtualCameras)
+        {
+            _allVirtualCameras = virtualCameras;
+
+            for (int i = 0; i < _allVirtualCameras.Length; i++)
+            {
+                if (_allVirtualCameras[i].enabled)
+                {
+                    SetCurrentCamera(_allVirtualCameras[i]);
+                }
+            }
+        }
+
         /// <summary>
         /// Change the confiner for the main player camera for each round 
         /// </summary>

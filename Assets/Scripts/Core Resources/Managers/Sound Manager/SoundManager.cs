@@ -35,7 +35,7 @@ namespace WitchDoctor.CoreResources.Managers.GeneralUtils
         Rain = 2,
     }
 
-    public class SoundManager : MonoSingleton<SoundManager>
+    public class SoundManager : DestroyableMonoSingleton<SoundManager>
     {
         [Header("Audio List"), SerializeField]
         private AudioList _audioList;
