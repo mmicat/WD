@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using WitchDoctor.Utils;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
+using DG.Tweening;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 {
@@ -13,6 +14,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         [Header("General")]
         [SerializeField]
         private Transform _characterRenderTransform;
+        [SerializeField]
+        private SpriteRenderer _spriteRenderer;
         [SerializeField]
         private AmalgamStats _baseStats;
         private Rigidbody2D _rb;
@@ -52,9 +55,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
 
         [Space(5)]
-        [Header("Misc")]
+        [Header("Hurt and Death")]
         [SerializeField]
         private float _hurtRefreshSeconds = 0.8f;
+        [SerializeField]
+        private float _deathDissolveTime = 0.95f;
+
         private Vector3 _referencePosition;
 
         private bool CharacterRenderFacingRight => _characterRenderTransform.rotation.eulerAngles.y == 0f;
@@ -159,6 +165,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             ResetManager();
             Debug.Log("Amalgam Died");
             _amalgamStates.dead = true;
+
+            // Disable collider and set death animation
+            _rb.gravityScale = 0;
+            _rb.isKinematic = true;
+            GetComponent<Collider2D>().enabled = false;
+            _spriteRenderer.material.DOFloat(1f, "_DissolveAmount", _deathDissolveTime).OnComplete(() => gameObject.SetActive(false));
 
             base.OnDeath();
         }

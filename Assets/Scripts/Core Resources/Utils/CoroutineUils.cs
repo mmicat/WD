@@ -15,4 +15,33 @@ namespace WitchDoctor.Utils
             onCompleted?.Invoke(handle.asset as T);
         }
     }
+
+    public class WaitUntilForSeconds : CustomYieldInstruction
+    {
+        float pauseTime;
+        float timer;
+        Func<bool> myChecker;
+
+        public WaitUntilForSeconds(Func<bool> myChecker, float waitTime)
+        {
+            this.myChecker = myChecker;
+            timer = waitTime;
+        }
+
+        public override bool keepWaiting
+        {
+            get
+            {
+                bool checkThisTurn = myChecker();
+
+                if (checkThisTurn || timer <= 0)
+                {
+                    return false;
+                }
+
+                timer -= Time.deltaTime;
+                return true;
+            }
+        }
+    }
 }

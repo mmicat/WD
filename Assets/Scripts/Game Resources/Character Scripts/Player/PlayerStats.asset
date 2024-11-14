@@ -57,6 +57,6 @@ MonoBehaviour:
   recoilSpeedDecayConstant: 1
   recoilXSteps: 14
   recoilYSteps: 10
-  recoilXSpeed: 55
-  recoilYSpeed: 45
+  recoilXSpeed: 23
+  recoilYSpeed: 20
   recoilGravityScale: 2

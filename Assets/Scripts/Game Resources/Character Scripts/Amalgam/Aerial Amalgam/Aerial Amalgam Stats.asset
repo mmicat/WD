@@ -37,9 +37,9 @@ MonoBehaviour:
   AmalgamDamagableLayers:
     serializedVersion: 2
     m_Bits: 0
-  recoilXSteps: 10
-  recoilYSteps: 10
-  recoilSpeedDecayConstant: 1.2
+  recoilXSteps: 3
+  recoilYSteps: 3
+  recoilSpeedDecayConstant: 1
   recoilXSpeed: 45
   recoilYSpeed: 45
   recoilGravityScale: 1
