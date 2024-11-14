@@ -17,6 +17,8 @@ namespace WitchDoctor.GameResources
             base.InitSingleton();
 
             _mediator.gameObject.SetActive(true);
+
+            Debug.Log("App Handler Initialized");
         }
 
         public override void CleanSingleton()
