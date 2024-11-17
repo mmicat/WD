@@ -52,7 +52,10 @@ namespace WitchDoctor.GameResources.StateMachine
         {
             base.OnEnter();
 
-            SceneManager.LoadScene(2);
+            if (AppHandler.Instance.LoadTestLevel)
+                SceneManager.LoadScene(2);
+            else
+                SceneManager.LoadScene(3);
         }
 
         public override void OnExit()
