@@ -10,6 +10,10 @@ namespace WitchDoctor.GameResources
     {
         [SerializeField]
         private GameStateMediator _mediator;
+        [SerializeField]
+        private bool _loadTestLevel = false;
+
+        public bool LoadTestLevel => _loadTestLevel;
 
         #region Overrides
         public override void InitSingleton()
