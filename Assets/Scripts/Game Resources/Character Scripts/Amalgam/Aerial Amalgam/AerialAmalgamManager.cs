@@ -1,10 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using WitchDoctor.Utils;
 using WitchDoctor.GameResources.Utils.ScriptableObjects;
 using UnityEngine;
 using Pathfinding;
 using System.Linq;
+using DG.Tweening;
 
 namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 {
@@ -18,6 +18,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         private Transform _characterRenderTransform;
         [SerializeField]
         private AmalgamStats _baseStats;
+        [SerializeField]
+        private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rb;
         private AmalgamStates _amalgamStates;
 
@@ -59,9 +61,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         [Space(5)]
 
-        [Header("Misc")]
+        [Header("Damage and Death")]
         [SerializeField]
         private float _hurtRefreshSeconds = 0.8f;
+        [SerializeField]
+        private float _deathDissolveTime = 0.95f;
 
 
         private float _defaultGravity;
@@ -220,6 +224,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             Debug.Log("Amalgam Died");
             _amalgamStates.dead = true;
 
+            // Disable collider and set death animation
+            GetComponent<Collider2D>().enabled = false;
+            _spriteRenderer.material.DOFloat(1f, "_DissolveAmount", _deathDissolveTime).OnComplete(() => gameObject.SetActive(false));
+
             base.OnDeath();
         }
         #endregion
@@ -229,13 +237,11 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
         {
             UpdateAmalgamStates();
             UpdateAnimations();
-            Recoil();
         }
 
         private void FixedUpdate()
         {
             CheckForFlip();
-            ProcessRecoil();
         }
         #endregion
 
@@ -263,8 +269,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
                 _pathfinder.destination = waypoint;
                 _pathfinder.SearchPath();
 
-                yield return new WaitUntil(() => _pathfinder.reachedDestination);
+                yield return new WaitUntil(() => _pathfinder.reachedDestination || _amalgamStates.IsRecoiling);
                 yield return new WaitForSeconds(_patrolStopWaitTime);
+                
+                if (_amalgamStates.IsRecoiling)
+                    continue;
+                
                 _currWaypointIndex = _currWaypointIndex == _targetPatrolPositions.Length - 1 ? 0 : _currWaypointIndex + 1;
             }
         }
@@ -277,109 +287,27 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             _amalgamStates.recoilingY = true;
             _amalgamStates.recoilingX = true;
 
-            // StartCoroutine(SetHurtAnimation());
+            _pathfinder.SetPath(null);
+            _destinationSetter.target = null;
+
+            // Set a destination on the pathfinder based on the recoil steps
+            var finalDist = _damageDir * (-Mathf.Max(_baseStats.recoilXSteps, _baseStats.recoilYSteps));
+            _pathfinder.destination = transform.position + (Vector3)finalDist;
+            _pathfinder.SearchPath();
+
+            StartCoroutine(RecoilCoroutine());
         }
 
-        /// <summary>
-        /// Adds a recoil force to the player
-        /// </summary>
-        /// <param name="runAnimation">Determines whether to run associated animation</param>
-        /// <param name="cancelActions">determines whether to cancel other actions</param>
-        private void Recoil(bool runAnimation = true)
+        private IEnumerator RecoilCoroutine()
         {
-            if (_amalgamStates.recoilingX || _amalgamStates.recoilingY)
-            {
-                //if (cancelActions)
-                //    InterruptMovementActions(true, true);
+            yield return new WaitUntilForSeconds(() => _pathfinder.reachedDestination, 3f);
 
-                _animateRecoil = runAnimation;
+            _pathfinder.SetPath(null);
 
-                var finalVelocity = Vector2.zero;
-
-                //since this is run after Walk, it takes priority, and effects momentum properly.
-                if (_amalgamStates.recoilingX)
-                {
-                    if (CharacterRenderFacingRight)
-                    {
-                        finalVelocity = new Vector2(-_baseStats.recoilXSpeed, 0);
-                    }
-                    else
-                    {
-                        finalVelocity = new Vector2(_baseStats.recoilXSpeed, 0);
-                    }
-                }
-                if (_amalgamStates.recoilingY)
-                {
-                    if (_damageDir.y < 0)
-                    {
-                        finalVelocity = new Vector2(finalVelocity.x, _baseStats.recoilYSpeed);
-                        _rb.gravityScale = _baseStats.recoilGravityScale;
-                    }
-                    else
-                    {
-                        finalVelocity = new Vector2(finalVelocity.x, -_baseStats.recoilYSpeed);
-                        _rb.gravityScale = _baseStats.recoilGravityScale;
-                    }
-
-                }
-
-                var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(_stepsYRecoiled, _stepsXRecoiled));
-                _rb.velocity = finalVelocity / decayFactor;
-            }
-            else
-            {
-                _rb.gravityScale = _defaultGravity;
-            }
-        }
-
-        private void ProcessRecoil()
-        {
-            if (!_amalgamStates.IsRecoiling)
-            {
-                if (_animateRecoil)
-                {
-                    _damageDir = Vector2.zero;
-                    _animateRecoil = false;
-                }
-
-                return;
-            }
-
-            var maxXSteps = _baseStats.recoilXSteps * Vector3.Normalize(_damageDir).x;
-            var maxYSteps = _baseStats.recoilYSteps * Vector3.Normalize(_damageDir).y;
-            if (_amalgamStates.recoilingX == true && _stepsXRecoiled < maxXSteps)
-            {
-                _stepsXRecoiled++;
-            }
-            else
-            {
-                StopRecoilX();
-            }
-            if (_amalgamStates.recoilingY == true && _stepsYRecoiled < maxYSteps)
-            {
-                _stepsYRecoiled++;
-            }
-            else
-            {
-                StopRecoilY();
-            }
-            // Flying amalgams are never grounded so we don't need this
-            //if (IsGrounded)
-            //{
-            //    StopRecoilY();
-            //}
-        }
-
-        private void StopRecoilX()
-        {
-            _stepsXRecoiled = 0;
-            _amalgamStates.recoilingX = false;
-        }
-
-        private void StopRecoilY()
-        {
-            _stepsYRecoiled = 0;
             _amalgamStates.recoilingY = false;
+            _amalgamStates.recoilingX = false;
+
+            _destinationSetter.target = _playerTransform;
         }
         #endregion
 
@@ -396,6 +324,16 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             _stepsYRecoiled = 0;
             _animateRecoil = false;
             _damageDir = Vector2.zero;
+
+            if (_playerDetectionCoroutine != null)
+            {
+                StopCoroutine(_playerDetectionCoroutine);
+                _playerDetectionCoroutine = null;
+            }
+
+            _destinationSetter.target = null;
+            _pathfinder.SetPath(null);
+            _pathfinder.destination = transform.position;
         }
 
         private IEnumerator CheckForPlayer()
@@ -403,43 +341,39 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
             int alertCounter = 0;
             while (true)
             {
-                var colliders = Physics2D.OverlapCircleAll(_visionConeCenter.position, _visionRadius, _baseStats.AmalgamAttackableLayers);
-                if (colliders != null && colliders.Length > 0)
+                if (!_amalgamStates.IsRecoiling) // Don't need to check for enemy when getting hit
                 {
-                    // Check if there is a collider
-                    _amalgamStates.alert = true;
-                    alertCounter = 0;
-                    _playerTransform = colliders.First().transform;
-                    _destinationSetter.target = _playerTransform;
-
-                    if (_waypointTraversalCoroutine != null)
+                    var colliders = Physics2D.OverlapCircleAll(_visionConeCenter.position, _visionRadius, _baseStats.AmalgamAttackableLayers);
+                    if (colliders != null && colliders.Length > 0)
                     {
-                        StopCoroutine(_waypointTraversalCoroutine);
-                        _waypointTraversalCoroutine = null;
-                    }
-                }
-                else if (_amalgamStates.alert)
-                {
-                    alertCounter++;
-                    if (alertCounter > _alertMaxSteps)
-                    {
-                        _amalgamStates.alert = false;
-                        _playerTransform = null;
-                        _destinationSetter.target = null;
+                        // Check if there is a collider
+                        _amalgamStates.alert = true;
                         alertCounter = 0;
+                        _playerTransform = colliders.First().transform;
+                        _destinationSetter.target = _playerTransform;
+
+                        if (_waypointTraversalCoroutine != null)
+                        {
+                            StopCoroutine(_waypointTraversalCoroutine);
+                            _waypointTraversalCoroutine = null;
+                        }
+                    }
+                    else if (_amalgamStates.alert)
+                    {
+                        alertCounter++;
+                        if (alertCounter > _alertMaxSteps)
+                        {
+                            _amalgamStates.alert = false;
+                            _playerTransform = null;
+                            _destinationSetter.target = null;
+                            alertCounter = 0;
+                        }
                     }
                 }
 
                 yield return new WaitForSeconds(_visionConeRefreshTime);
             }
         }
-
-        //private IEnumerator SetHurtAnimation()
-        //{
-        //    _amalgamStates.hurt = true;
-        //    yield return new WaitForSeconds(_hurtRefreshSeconds);
-        //    _amalgamStates.hurt = false;
-        //}
 
         private Mesh GetVisionConeMesh()
         {
@@ -491,8 +425,10 @@ namespace WitchDoctor.GameResources.CharacterScripts.Amalgam.GroundAmalgam
 
         private void CheckForFlip()
         {
+            if (_amalgamStates.IsRecoiling)
+                return;
+
             var currVelocity = _pathfinder.velocity;
-            // Debug.Log(currVelocity);
             if (Mathf.Abs(currVelocity.x) > _flipThreshold)
             {
                 if ((currVelocity.x < 0 && CharacterRenderFacingRight) || 
