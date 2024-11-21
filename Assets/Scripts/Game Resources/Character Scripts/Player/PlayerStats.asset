@@ -31,9 +31,9 @@ MonoBehaviour:
   RoofCheckDist: 0.2
   RoofCheckY: 0.2
   RoofCheckX: 1.52
-  LedgeCheckDist: 0.6
-  LedgeCheckY: 1
-  LedgeCheckX: 0.2
+  LedgeCheckDist: 0.71
+  LedgeCheckY: 1.33
+  LedgeCheckX: 0.3
   PlayerAttackableLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -43,14 +43,14 @@ MonoBehaviour:
   AttackResetDuration: 0.1
   PrimaryAttackChargeDelay: 0.15
   PrimaryAttackChargeTime: 0.85
-  Attack1HitboxRadius: 2.75
-  Attack2HitboxRadius: 2.44
-  Attack3HitboxRadius: 3.21
-  ChargedAttackHitboxRadius: 3.21
-  Attack1Offset: {x: 0.52, y: 1.2}
-  Attack2Offset: {x: 0.79, y: 0.98}
-  Attack3Offset: {x: 0.75, y: 1.03}
-  ChargedAttackOffset: {x: 0.75, y: 1.03}
+  Attack1HitboxRadius: 2.48
+  Attack2HitboxRadius: 3.6
+  Attack3HitboxRadius: 4.12
+  ChargedAttackHitboxRadius: 4.1
+  Attack1Offset: {x: -0.35, y: -1.67}
+  Attack2Offset: {x: -1.31, y: -0.94}
+  Attack3Offset: {x: -0.51, y: -0.98}
+  ChargedAttackOffset: {x: 0.08, y: -0.91}
   PlayerDamagableLayers:
     serializedVersion: 2
     m_Bits: 256

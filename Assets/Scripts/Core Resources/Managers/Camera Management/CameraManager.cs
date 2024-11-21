@@ -44,6 +44,8 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
                 }
             }
 
+            if (_framingTransposer == null) return;
+
             // set the initial YDamping amount so that it's based on the inspector value
             _initialYPanAmount = _framingTransposer.m_YDamping;
 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 754163896f99907439968bc354d0abf6
+guid: 9ef5efb9548d5b141a0b48f57b873b60
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 10
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -149,13 +149,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: flyinghitsheet_0
+      name: walk cycle_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 226
-        height: 211
+        x: 20
+        y: 15
+        width: 22
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -163,20 +163,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d0f4af161dd9b7d44afe97f0d268d8c0
-      internalID: -1002610655
+      spriteID: 28116bca418f3cf4caf939e985e34de1
+      internalID: 1403664778
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: flyinghitsheet_2
+      name: walk cycle_1
       rect:
         serializedVersion: 2
-        x: 269
-        y: 0
-        width: 226
-        height: 210
+        x: 84
+        y: 15
+        width: 22
+        height: 33
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,8 +184,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a1b03a69d20323e468c80908188476b5
-      internalID: -862952208
+      spriteID: 593b5879b173b8249b794279608cd9ac
+      internalID: -659465607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_2
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 15
+        width: 22
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c7b7518d8ca7d54893b97a31bde1465
+      internalID: 1416293672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_3
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 15
+        width: 22
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 862d649f7d2f11343a846e423a6c1408
+      internalID: -600602669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_4
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 15
+        width: 22
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba593d0381fed6b419ee06c8aecc1242
+      internalID: -657320200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_5
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 15
+        width: 23
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0373fc81690533c42b7818c22224982b
+      internalID: -298752178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_6
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 15
+        width: 23
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5d0755ac8f94444bb615488947f92b2
+      internalID: -1688786741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: walk cycle_7
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 15
+        width: 22
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8feaab5d8e88e3f46bc0e98373ddfa48
+      internalID: 1353949561
       vertices: []
       indices: 
       edges: []
@@ -201,22 +327,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      flyinghitsheet_0: -1002610655
-      flyinghitsheet_1: 1755146137
-      flyinghitsheet_10: -1743728394
-      flyinghitsheet_11: -2070938774
-      flyinghitsheet_12: -1084782999
-      flyinghitsheet_13: 2108662884
-      flyinghitsheet_14: -1393358238
-      flyinghitsheet_15: 1617310999
-      flyinghitsheet_2: -862952208
-      flyinghitsheet_3: 710877032
-      flyinghitsheet_4: -2045047554
-      flyinghitsheet_5: -546641567
-      flyinghitsheet_6: -1741836986
-      flyinghitsheet_7: 1188121288
-      flyinghitsheet_8: -195832673
-      flyinghitsheet_9: -2023947264
+      walk cycle_0: 1403664778
+      walk cycle_1: -659465607
+      walk cycle_2: 1416293672
+      walk cycle_3: -600602669
+      walk cycle_4: -657320200
+      walk cycle_5: -298752178
+      walk cycle_6: -1688786741
+      walk cycle_7: 1353949561
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
