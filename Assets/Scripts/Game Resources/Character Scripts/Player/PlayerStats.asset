@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472ed017c5aa9ed47b50f638f7efe840, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
-  BaseHealth: 100
-  BaseAttackDamage: 15
+  BaseHealth: 200
+  BaseAttackDamage: 20
   WalkSpeed: 15
   JumpSpeed: 45
-  MaxFallSpeed: 45
+  MaxFallSpeed: 50
   JumpSteps: 20
   JumpThreshold: 7
   DashingVelocity: 14

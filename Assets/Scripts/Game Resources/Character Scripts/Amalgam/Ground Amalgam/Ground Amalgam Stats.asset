@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ground Amalgam Stats
   m_EditorClassIdentifier: 
   BaseHealth: 100
-  BaseAttackDamage: 15
+  BaseAttackDamage: 5
   ContactDamage: 10
   MovementSpeed: 4.8
   GroundCheckDist: 0.24
