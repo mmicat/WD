@@ -214,16 +214,34 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
         /// Flip the characters direction based on 
         /// the x axis motion
         /// </summary>
-        private void Flip()
+        private void Flip(bool force = false)
         {
             var orientation = CharacterRenderFacingRight;
-            if (_movement.x > 0 && !orientation)
+            
+            if (force) // Force the orientation regardless of the movement
+            {
+                if (orientation)
+                {
+                    var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
+                    _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                    _playerCameraManager.FlipCameraFollow();
+                }
+                else
+                {
+                    var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
+                    _characterRenderTransform.rotation = Quaternion.Euler(rotator);
+                    _playerCameraManager.FlipCameraFollow();
+                }
+                return;
+            }
+
+            if ((_movement.x > 0) && !orientation)
             {
                 var rotator = new Vector3(transform.rotation.x, 0, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
                 _playerCameraManager.FlipCameraFollow();
             }
-            else if (_movement.x < 0 && orientation)
+            else if ((_movement.x < 0) && orientation)
             {
                 var rotator = new Vector3(transform.rotation.x, 180, transform.rotation.y);
                 _characterRenderTransform.rotation = Quaternion.Euler(rotator);
@@ -351,7 +369,8 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                 //since this is run after Walk, it takes priority, and effects momentum properly.
                 if (_playerStates.recoilingX)
                 {
-                    if (CharacterRenderFacingRight)
+                    //if (CharacterRenderFacingRight)
+                    if (_damageDir.x > 0)
                     {
                         finalVelocity = new Vector2(-_baseStats.recoilXSpeed, 0);
                     }
@@ -374,7 +393,12 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
                     }
 
                 }
-                
+
+                Debug.Log(finalVelocity.x);
+                Debug.Log(CharacterRenderFacingRight);
+                if ((finalVelocity.x < 0 && !CharacterRenderFacingRight) || (finalVelocity.x > 0 && CharacterRenderFacingRight))
+                    Flip(true);
+
                 var decayFactor = Mathf.Pow(_baseStats.recoilSpeedDecayConstant, Mathf.Max(_stepsYRecoiled, _stepsXRecoiled));
                 _rb.velocity = finalVelocity / decayFactor;
             }
@@ -399,6 +423,9 @@ namespace WitchDoctor.GameResources.CharacterScripts.Player.EntityManagers
 
             if (_playerStates.recoilingX == true && _stepsXRecoiled < _baseStats.recoilXSteps)
             {
+                if (!IsGrounded) // Might fall off before recoil steps on the x axis are completed, leading to bugs
+                    StopRecoilX();
+
                 _stepsXRecoiled++;
             }
             else
