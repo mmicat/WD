@@ -10,6 +10,7 @@ namespace WitchDoctor.CoreResources.Managers.CameraManagement
 {
     public class CameraManager : DestroyableMonoSingleton<CameraManager>
     {
+        [SerializeField]
         private CinemachineVirtualCamera _currentCamera;
         [SerializeField] private CinemachineVirtualCamera[] _allVirtualCameras;
         [SerializeField] private float _cameraResetPanTime = 1.5f;

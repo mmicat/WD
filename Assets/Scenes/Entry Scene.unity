@@ -134,10 +134,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AppHandler
       objectReference: {fileID: 0}
-    - target: {fileID: 1304921046789941291, guid: 46b5a40b2676bb94cb7ec55157863f10, type: 3}
-      propertyPath: _loadTestLevel
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4797152696297930531, guid: 46b5a40b2676bb94cb7ec55157863f10, type: 3}
       propertyPath: m_LocalPosition.x
       value: 22.042269
